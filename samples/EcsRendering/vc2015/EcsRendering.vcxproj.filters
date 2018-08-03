@@ -1,0 +1,139 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Blocks">
+      <UniqueIdentifier>{2E40E407-CFCD-427D-AD4C-0E1001FC8D34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui">
+      <UniqueIdentifier>{981FAD77-1A5B-4301-AF31-BFCBD8133921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\include">
+      <UniqueIdentifier>{463990F6-E61D-4ACA-BE49-0473F657335D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib">
+      <UniqueIdentifier>{85187367-0289-40FB-8FB3-43478264FDD1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib\imgui">
+      <UniqueIdentifier>{F33CD19F-2DA4-43FB-8652-9492D71D5BAA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\src">
+      <UniqueIdentifier>{A19673BA-613D-41D8-871C-75E149DFC5D1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder - ecs">
+      <UniqueIdentifier>{EB8C4CDE-0B82-4C9C-B968-9A73C154D6EF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder - ecs\src">
+      <UniqueIdentifier>{F8AE8E40-5ECE-4679-B5AA-1096ECC0FE7E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder - ecs\src\ecs">
+      <UniqueIdentifier>{D04A8A42-451D-4FD6-8805-3134516DF598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\Cinder - ecs\src\Utils">
+      <UniqueIdentifier>{35CF4A99-34E6-48C4-810C-8FDC71B10A04}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\EcsRenderingApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\EcsRenderingApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\include\CinderImGui.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\include\imgui_user.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\include\imgui_user.inl">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imconfig.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_internal.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\src\CinderImGui.cpp">
+      <Filter>Blocks\ImGui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\ecs\Component.h">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ecs\Entity.h">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ecs\Manager.h">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\ecs\System.h">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\ecs\Entity.cpp">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\ecs\System.cpp">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\Utils\Transform.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\Utils\Transform.cpp">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\Utils\TransformSystem.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\src\Utils\UpdateDrawables.cpp">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\..\src\Utils\Factory.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\DrawSystem.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\DrawSystem.cpp">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
