@@ -17,7 +17,6 @@
 #include "cinder/Json.h"
 #include "CinderImGui.h"
 
-using CTransformHandle = std::weak_ptr<class Transform>;
 
 class Transform : public ecs::Component, public std::enable_shared_from_this<Transform>{
 
@@ -32,10 +31,9 @@ public:
         // clean up children
         if( children.size() > 0 ){
             for( auto& c : children ){
-                c.lock()->removeParent(false, false);
+                c->removeParent(false, false);
             }
         }
-        
     }
     
     
@@ -132,12 +130,12 @@ public:
     // Parenting ----
     
     
-    void setParent( CTransformHandle _parent, bool keepWordCTransform = true );
+    void setParent( Transform* _parent, bool keepWordCTransform = true );
     void removeParent(bool keepWorldCTransform = true, bool removeFromList = true);
     
-    CTransformHandle getParent() const { return parent; }
+    Transform* getParent() const { return parent; }
     
-    std::vector<CTransformHandle> getChildren() const { return children; }
+    std::vector<Transform*> getChildren() const { return children; }
     
     
     bool needsUpdate() {
@@ -145,24 +143,24 @@ public:
         return needs;
     }
 
-    bool addChild( CTransformHandle transform );
-    bool removeChild( CTransformHandle transform );
+    bool addChild( Transform* transform );
+    bool removeChild( Transform* transform );
     
     // todo: rename to containChild
-    bool hasChild(const CTransformHandle child,  bool recursive = true );
-    bool hasParent() const { return (parent.lock() != nullptr); }
+    bool hasChild(const Transform* child,  bool recursive = true );
+    bool hasParent() const { return (parent != nullptr); }
     
-    CTransformHandle getRoot();
+    Transform* getRoot();
     
     bool isLeaf()const { return children.size() == 0 ? true : false; }
     
-    bool removeChildFromList(CTransformHandle child);
-    bool addChildToList(CTransformHandle child);
+    bool removeChildFromList(Transform* child);
+    bool addChildToList(Transform* child);
     
-    CTransformHandle findChild( CTransformHandle child );
+    Transform* findChild(const Transform* child );
     
     /// Visit all of this components' descendents depth-first. TODO: separate visitor patterns from data.
-    void descendTree(const std::function<void (CTransformHandle &parent, CTransformHandle &child)> &fn);
+    void descendTree(const std::function<void (Transform* &parent, Transform* &child)> &fn);
 
     
     size_t getId() const { return mId; }
@@ -174,14 +172,14 @@ public:
     bool getAlwaysUpdate(){ return mAlwaysUpdate; }
     
     
-    ci::signals::Signal< void( CTransformHandle& handle ) >& getUpdateSignal(){ return onUpdateSignal; }
+    std::shared_ptr<  ci::signals::Signal< void( Transform* handle ) > > getUpdateSignal(){ return onUpdateSignal; }
     
 protected:
     
     bool mNeedsUpdate = true;
     bool mAlwaysUpdate = false;
     
-    ci::signals::Signal< void( CTransformHandle& handle ) > onUpdateSignal;
+    std::shared_ptr< ci::signals::Signal< void( Transform* handle ) > >  onUpdateSignal;
     
     glm::vec3 localPos;
     glm::vec3 anchorPoint;
@@ -194,8 +192,8 @@ protected:
     glm::mat4 mCTransform;
     glm::mat4 mWorldCTransform;
     
-    std::vector<CTransformHandle> children;
-    CTransformHandle parent;
+    std::vector<Transform*> children;
+    Transform* parent = nullptr;
     
     
     static size_t transformId;
@@ -208,7 +206,7 @@ template <>
 struct ecs::ComponentFactoryTemplate<Transform> : public ecs::ComponentFactory<Transform> {
     
     ComponentFactoryTemplate(){
-        ComponentFactory();
+//        ComponentFactory();
     }
 
     
@@ -296,7 +294,7 @@ namespace ImGui{
         t->updateMatrices();
     }
     
-    ecs::EntityRef DrawTree( std::shared_ptr<Transform>& root );
+    ecs::EntityRef DrawTree(const Transform* root );
     
 }
 

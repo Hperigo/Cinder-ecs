@@ -37,9 +37,7 @@ namespace ecs{
             mIsAlive = false;
             
             for( auto& c : mComponentArray ){
-                if(auto cHandle = c.lock()){
-                    cHandle->onDestroy();
-                };
+                    c->onDestroy();
             }
             
             markRefresh();
@@ -76,7 +74,7 @@ namespace ecs{
         }
         
         template<typename T, typename... TArgs>
-        std::weak_ptr<T> addComponent(TArgs&&... _Args) {
+        T* addComponent(TArgs&&... _Args) {
 
 //            constexpr if( !std::is_base_of<Component, T> ){
 //                assert( 0 );
@@ -92,7 +90,7 @@ namespace ecs{
             
             addComponentToManager(cId, rawComponent);
             
-            return  rawComponent;
+            return  rawComponent.get();
         }
         
         void addComponent( ComponentRef& rawComponent ){
@@ -116,25 +114,23 @@ namespace ecs{
         }
 
         template<typename T>
-        std::weak_ptr<T> getComponent() {
+        T* getComponent() {
             assert(hasComponent<T>());
 
             markRefresh();
 
-            return std::static_pointer_cast<T> (  mComponentArray[getComponentTypeID<T>()].lock() );
+            return (T*)mComponentArray[getComponentTypeID<T>()];
         }
 
 
         inline std::bitset<MaxComponents> getComponentBitset(){ return mComponentBitset; }
         std::shared_ptr<internal::EntityInfoBase> mInfo;
         
-        inline std::vector< ComponentHandle> getComponents(){
-            std::vector< ComponentHandle> components;
+        inline std::vector< Component* > getComponents(){
+            std::vector< Component* > components;
             
             for( auto& c : mComponentArray ){
-                if( c.lock() ){
                     components.push_back( c );
-                }
             }
             
             return components;
@@ -154,7 +150,7 @@ namespace ecs{
         bool mIsAlive{ true };
         
         std::bitset<MaxComponents> mComponentBitset;
-        std::array< ComponentHandle, MaxComponents> mComponentArray;
+        std::array< Component* , MaxComponents> mComponentArray;
         
         static unsigned int mNumOfEntities;
         unsigned int mEntityId;

@@ -35,7 +35,7 @@ namespace ecs{
         }
     
         struct ComponentFactoryInterface : public std::enable_shared_from_this<ComponentFactoryInterface> {
-            virtual void copyComponent(ComponentRef& source, ComponentRef& target){};
+            virtual void copyComponent(const Component* source, Component* target){};
             virtual void load(void* archiver){};
             virtual void save(void* archiver){};
             virtual ComponentRef create() = 0;
@@ -67,6 +67,7 @@ namespace ecs{
 
 
         std::weak_ptr<Entity> getEntity(){ return mEntity; }
+        std::weak_ptr<Entity> getEntity() const { return mEntity; }
         Manager* getManager(){ return mManager; }
 
         
@@ -104,16 +105,19 @@ namespace ecs{
     
     template<class T>
     struct ComponentFactory :  public internal::ComponentFactoryInterface{
-            
-            
+        
             ComponentFactory() {
-                
                 owner = &object;
                 _id = getComponentTypeID<T>();
             }
             
-        void copyComponent( ComponentRef& source, ComponentRef& target) override{
-            target = std::make_shared<T>(  *std::static_pointer_cast<T>( source ) );
+        void copyComponent(const Component* source, Component* target) override{
+//            *source = T( *((T*)source) ); // cast
+            
+            T object = *((T*)source);
+            T* sourceObj = (T*)source;
+            
+            *sourceObj = *((T*)source);
         }
             
         

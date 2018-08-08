@@ -245,12 +245,12 @@ public:
             if(  e->mComponentBitset[i] == true ){
                 
                 ComponentRef targetComponent;
-                auto sourceComponent = e->mComponentArray[i].lock();
-                
-                sourceComponent->getFactory()->copyComponent( sourceComponent, targetComponent );
+                auto sourceComponent = e->mComponentArray[i];
+
+                sourceComponent->getFactory()->copyComponent( sourceComponent, targetComponent.get() );
                 targetComponent->mEntity = e;
                 mComponents[i].push_back(  targetComponent );
-                e->mComponentArray[i] = mComponents[i].back();
+                e->mComponentArray[i] = mComponents[i].back().get();
             }
         }
         

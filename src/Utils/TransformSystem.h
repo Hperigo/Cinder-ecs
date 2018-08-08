@@ -40,7 +40,7 @@ struct TransformSystem : ecs::System{
             // draw parent child relation
             if( trans->hasParent() ){
                 
-                auto parentHandle = trans->getParent().lock();
+                auto parentHandle = trans->getParent();
                 ci::gl::drawLine(trans->getWorldPos(),  parentHandle->getWorldPos() );
 
             }
@@ -69,7 +69,6 @@ struct TransformSystem : ecs::System{
 
                 ci::gl::color( ci::Color::white());
             }
-//
         }
     }
     
