@@ -19,6 +19,9 @@ size_t Transform::transformId = 0;
 Transform::Transform(){
     mId = transformId;
     transformId++;
+    
+    
+    onUpdateSignal = std::make_shared<ci::signals::Signal<void(const Transform*)>>();
 }
 
 Transform::Transform( const vec3& pos_ ) : localPos(pos_){
@@ -65,12 +68,12 @@ void Transform::updateMatrices(bool emitSignal){
     
     if(parent)
     {
-        mWorldCTransform = parent->getWorldCTransform() * mCTransform;
+        mWorldTransform = parent->getWorldTransform() * mCTransform;
     }else{
-        mWorldCTransform = mCTransform;
+        mWorldTransform = mCTransform;
     }
     
-    if( onUpdateSignal && emitSignal ){
+    if( onUpdateSignal && onUpdateSignal->getNumSlots() != 0){
         onUpdateSignal->emit( this );
     }
     
@@ -90,11 +93,11 @@ void Transform::setCTransform(const mat4 &transform){
     if(parent)
     {
         
-        mWorldCTransform = parent->getWorldCTransform() * mCTransform;
+        mWorldTransform = parent->getWorldTransform() * mCTransform;
         
     }else{
         
-        mWorldCTransform = mCTransform;
+        mWorldTransform = mCTransform;
     }
 
     mNeedsUpdate = true;
@@ -109,7 +112,7 @@ vec3 Transform::getWorldPos() {
         updateMatrices(false);
     }
 
-    vec4 p = mWorldCTransform * vec4(anchorPoint, 1);
+    vec4 p = mWorldTransform * vec4(anchorPoint, 1);
     return vec3(p.x, p.y, p.z);
 }
 
@@ -118,7 +121,7 @@ void Transform::setWorldPos(const vec3& pos){
     
     if(parent)
     {
-        auto newP = glm::inverse(parent->getWorldCTransform()) * glm::vec4(pos, 1);
+        auto newP = glm::inverse(parent->getWorldTransform()) * glm::vec4(pos, 1);
         localPos = newP;
     }else{
         localPos = pos;
@@ -237,7 +240,7 @@ void Transform::removeParent(bool keepWordCTransform, bool removeFromList){
     
     if(p && keepWordCTransform){
         
-        auto newPos =  mWorldCTransform * vec4(0,0, 0, 1);
+        auto newPos =  mWorldTransform * vec4(0,0, 0, 1);
         localPos = vec3( newPos.x, newPos.y, newPos.z );
         
         auto newScale =  localScale * p->getWorldScale();

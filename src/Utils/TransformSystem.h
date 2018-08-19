@@ -56,7 +56,7 @@ struct TransformSystem : ecs::System{
             
             {
                 ci::gl::ScopedModelMatrix m;
-                ci::gl::multModelMatrix( trans->getWorldCTransform() );
+                ci::gl::multModelMatrix( trans->getWorldTransform() );
                 ci::gl::translate( trans->getAnchorPoint() );
                 const float length = 50;
                 // x axis

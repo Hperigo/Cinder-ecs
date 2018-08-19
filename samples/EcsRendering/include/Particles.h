@@ -11,6 +11,13 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 
+
+struct Test : ecs::Component {
+    
+    
+    
+};
+
 struct Particle : ecs::Component{
     
     Particle(){
@@ -22,6 +29,13 @@ struct Particle : ecs::Component{
     ci::vec2 speed;
     ci::vec2 pos;
     float lifetime = 10;
+    
+    
+    void onDestroy() override {
+        
+        auto e = getEntity().lock();
+        e->removeComponent<Test>();
+    }
 };
 
 
@@ -39,7 +53,7 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
         
         for(auto& e : mParticles ){
             
-            auto particleHandle = e->getComponent<Particle>().lock();
+            auto particleHandle = e->getComponent<Particle>();
             
             particleHandle->speed *= 0.94;
             particleHandle->pos   += particleHandle->speed;
@@ -58,7 +72,7 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
         
         for(auto& e : mParticles ){
             
-            auto particle = e->getComponent<Particle>().lock();
+            auto particle = e->getComponent<Particle>();
             
             gl::ScopedModelMatrix m;
             gl::translate( particle->pos );
@@ -76,8 +90,8 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
         
         auto e = getManager()->createEntity();
         e->addComponent<Particle>( pos, Rand::randVec2() * 7.f );
-        
-        
+        e->addComponent<Test>();
+    
     }
     
     std::vector<ecs::EntityRef> mParticles;

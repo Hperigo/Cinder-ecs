@@ -11,7 +11,7 @@ using namespace ecs;
 
 unsigned int Entity::mNumOfEntities = 0;
 
-void Entity::addComponentToManager( ComponentID cId, ComponentRef component){
+void Entity::addComponentToManager( ComponentID cId, const ComponentRef& component){
 
     mManager->addComponent( cId, component );
 

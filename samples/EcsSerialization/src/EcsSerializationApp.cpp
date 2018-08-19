@@ -82,10 +82,10 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
         
         gl::ScopedModelMatrix m;
         
-        auto c = entity->getComponent<Transform>().lock();
+        auto c = entity->getComponent<Transform>();
         gl::multModelMatrix(c->getWorldCTransform());
         
-        gl::ScopedColor sc( entity->getComponent<ColorComponent>().lock()->_color );
+        gl::ScopedColor sc( entity->getComponent<ColorComponent>()->_color );
         gl::drawSolidRect( _r );
 
     }
@@ -163,7 +163,7 @@ void EcsSerializationApp::setup()
     
     auto child = createEntity(  _activeEntity );
     auto childB = createEntity(  _activeEntity );
-    childB->getComponent<Transform>().lock()->setPos(vec3(0, 200, 0));
+    childB->getComponent<Transform>()->setPos(vec3(0, 200, 0));
     
     ui::initialize( ui::Options().darkTheme() );
     ecs::factory::initialize( mManager, true, false );
@@ -175,20 +175,20 @@ ecs::EntityRef EcsSerializationApp::createEntity(ecs::EntityRef &parent){
     
     auto e = mManager.createEntity();
     auto transform = e->addComponent<Transform>();
-    transform.lock()->setWorldPos( vec3( vec2(getWindowCenter()), 0 ) );
-    transform.lock()->setAnchorPoint(vec3( 50, 50, 0 ));
-    auto color = e->addComponent<ColorComponent>().lock();
+    transform->setWorldPos( vec3( vec2(getWindowCenter()), 0 ) );
+    transform->setAnchorPoint(vec3( 50, 50, 0 ));
+    auto color = e->addComponent<ColorComponent>();
     color->_color = Color(CM_HSV, randFloat(1), 1.0f, 0.5f);
     
     auto drawTarget = ecs::DrawSystem::getDefaultDrawTarget();
     
-    auto r = e->addComponent<RectComponent>().lock();
+    auto r = e->addComponent<RectComponent>();
     auto radius = 100.f;
     r->_r = Rectf( 0,0, radius, radius );
     
     if(  parent ){
-        parent->getComponent<Transform>().lock()->addChild( transform );
-        transform.lock()->setPos( vec3(100, 0, 0) );
+        parent->getComponent<Transform>()->addChild( transform );
+        transform->setPos( vec3(100, 0, 0) );
     }
     
     return e;
@@ -199,7 +199,7 @@ ecs::EntityRef EcsSerializationApp::createEntity(ecs::EntityRef &parent){
 void EcsSerializationApp::mouseDrag( MouseEvent event )
 {
     if(_activeEntity){
-        _activeEntity->getComponent<Transform>().lock()->setWorldPos( vec3( event.getPos(), 0 ) );
+        _activeEntity->getComponent<Transform>()->setWorldPos( vec3( event.getPos(), 0 ) );
     }
     
 }
@@ -231,8 +231,8 @@ void EcsSerializationApp::draw()
         auto entities = mManager.getEntitiesWithComponents<Transform>();
             for( auto e : entities){
                 
-                if( ! e->getComponent<Transform>().lock()->hasParent() ){
-                    auto ptr =  e->getComponent<Transform>().lock();
+                if( ! e->getComponent<Transform>()->hasParent() ){
+                    auto ptr =  e->getComponent<Transform>();
                     auto result = ImGui::DrawTree( ptr );
                     if( result ){
                         _activeEntity = result;
@@ -245,9 +245,9 @@ void EcsSerializationApp::draw()
             
             ui::Dummy({0, 10 });
             ui::Text( "Active transform" );
-            auto tComponent = _activeEntity->getComponent<Transform>().lock();
-            ui::DrawTransform2D( tComponent.get(), 10);
-            auto cc = _activeEntity->getComponent<ColorComponent>().lock();
+            auto tComponent = _activeEntity->getComponent<Transform>();
+            ui::DrawTransform2D( tComponent, 10);
+            auto cc = _activeEntity->getComponent<ColorComponent>();
             ui::Dummy({0, 10 });
             ui::ColorEdit3( "Color", &cc->_color[0] );
             ui::Dummy({0, 10 });
@@ -260,12 +260,12 @@ void EcsSerializationApp::draw()
             
             auto ehandle = e;
             auto radius = randFloat( 10, 30 );
-            ehandle->getComponent<RectComponent>().lock()->_r = Rectf( -radius, -radius, radius, radius );
+            ehandle->getComponent<RectComponent>()->_r = Rectf( -radius, -radius, radius, radius );
             
-            e->getComponent<Transform>().lock()->setAnchorPoint( { 0 , 0, 0.f } );
+            e->getComponent<Transform>()->setAnchorPoint( { 0 , 0, 0.f } );
             
             
-            auto color = e->getComponent<ColorComponent>().lock();
+            auto color = e->getComponent<ColorComponent>();
             color->_color = Color(CM_HSV, randFloat(1), 1.0f, 0.75f);
             
         }
@@ -274,9 +274,9 @@ void EcsSerializationApp::draw()
     
     if( ui::Button("Animate children") ){
 
-        _activeEntity->getComponent<Transform>().lock()->descendTree([&](CTransformHandle & root, CTransformHandle &child ){
+        _activeEntity->getComponent<Transform>()->descendTree([&](Transform* root, Transform* child ){
             
-                auto transform =  child.lock();
+                auto transform =  child;
                 
                 auto pos = randVec3() * 300.f;
                 auto scale = randFloat(0.2f, 1.2f);
@@ -292,9 +292,9 @@ void EcsSerializationApp::draw()
     
     if( ui::Button("Animate to 0") ){
         
-        _activeEntity->getComponent<Transform>().lock()->descendTree([&](CTransformHandle & root, CTransformHandle &child ){
+        _activeEntity->getComponent<Transform>()->descendTree([&](Transform* root, Transform* child ){
             
-            auto transform =  child.lock();
+            auto transform =  child;
             
             auto pos = vec3(0);
             auto scale = randFloat(0.2f, 1.2f);
@@ -351,7 +351,7 @@ void EcsSerializationApp::draw()
         
         if( _activeEntity ){
             auto e = ecs::factory::loadTree(&mArchive, mManager);
-            e->getComponent<Transform>().lock()->setParent( _activeEntity->getComponent<Transform>() );
+            e->getComponent<Transform>()->setParent( _activeEntity->getComponent<Transform>() );
         }else{
             _activeEntity = ecs::factory::loadTree(&mArchive, mManager);
         }

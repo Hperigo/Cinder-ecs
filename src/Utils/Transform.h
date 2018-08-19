@@ -40,13 +40,13 @@ public:
     void setCTransform(const ci::mat4& transform );
     
     ci::mat4 getCTransformMatrix() const { return mCTransform; }
-    ci::mat4 getWorldCTransform() {
+    ci::mat4 getWorldTransform() {
         
         if( needsUpdate() ){
             updateMatrices();
         }
         
-        return mWorldCTransform;
+        return mWorldTransform;
     }
     
     // Position ------------------------------
@@ -172,14 +172,14 @@ public:
     bool getAlwaysUpdate(){ return mAlwaysUpdate; }
     
     
-    std::shared_ptr<  ci::signals::Signal< void( Transform* handle ) > > getUpdateSignal(){ return onUpdateSignal; }
+    std::shared_ptr<  ci::signals::Signal< void(const Transform* handle ) > > getUpdateSignal(){ return onUpdateSignal; }
     
 protected:
     
     bool mNeedsUpdate = true;
     bool mAlwaysUpdate = false;
     
-    std::shared_ptr< ci::signals::Signal< void( Transform* handle ) > >  onUpdateSignal;
+    std::shared_ptr< ci::signals::Signal< void(const Transform* handle ) > >  onUpdateSignal;
     
     glm::vec3 localPos;
     glm::vec3 anchorPoint;
@@ -190,7 +190,7 @@ protected:
     glm::quat mRotation;
     
     glm::mat4 mCTransform;
-    glm::mat4 mWorldCTransform;
+    glm::mat4 mWorldTransform;
     
     std::vector<Transform*> children;
     Transform* parent = nullptr;

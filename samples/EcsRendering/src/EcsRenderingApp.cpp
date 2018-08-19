@@ -45,17 +45,22 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
         
         gl::ScopedModelMatrix m;
         
-        auto c = entity->getComponent<CTransform>().lock();
-        gl::multModelMatrix(c->getWorldCTransform());
+        auto c = entity->getComponent<Transform>();
+        gl::multModelMatrix(c->getWorldTransform());
         
         auto color = Color::white();
         
         if( entity->hasComponent<  ecs::WrapperComponent<Color>> () ){
-            color = entity->getComponent< ecs::WrapperComponent<Color>>().lock()->object;
+            color = entity->getComponent< ecs::WrapperComponent<Color>>()->object;
         }
         
         gl::ScopedColor sc( color );
         gl::drawSolidRect( _r );
+    }
+    
+    void onDestroy() override{
+        
+        console() << ". " << endl;
     }
 };
 
@@ -73,15 +78,14 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
 
         { // draw the generated texture
             gl::ScopedModelMatrix m;
-            auto c = entity->getComponent<CTransform>().lock();
-            gl::multModelMatrix(c->getWorldCTransform());
+            auto c = entity->getComponent<Transform>();
+            gl::multModelMatrix(c->getWorldTransform());
             gl::ScopedColor sc( ColorA(1.0f, 1.0f, 1.0f, 1.0f) );
             gl::draw( mTexture, Rectf(0,0, 200,200) );
             gl::drawString( "texture from FBO beein drawn in a texture component", vec2(10,10) );
         }
     }
-    
-    
+
     gl::TextureRef mTexture;
 };
 
@@ -141,7 +145,7 @@ public:
         auto dt = getManager()->getDrawSystem()->getDefaultDrawTarget();
         setDrawTarget( dt.get() );
         
-        addComponent<CTransform>();
+        addComponent<Transform>();
     }
     
     
@@ -154,9 +158,9 @@ public:
         
         gl::ScopedModelMatrix m;
         
-        auto t = getComponent<CTransform>().lock();
+        auto t = getComponent<Transform>();
         
-//        gl::multModelMatrix( t->getCTransformMatrix() );
+//        gl::multModelMatrix( t->getTransformMatrix() );
         gl::color( Color(0.4, 0.4, 1.0) );
         gl::drawSolidCircle( t->getPos() , mRadius );
         
@@ -195,6 +199,12 @@ void EcsRenderingApp::setup()
     mManager.getDrawSystem()->addDrawTarget( mFboDrawTarget );
 
     
+    auto e = mManager.createEntity();
+    e->addComponent<RectComponent>();
+    e->removeComponent<RectComponent>();
+    e->destroy();
+    
+    
     { // FBO target ------
         
         // add a particle system to the draw target
@@ -203,7 +213,7 @@ void EcsRenderingApp::setup()
         
         // create a rotating rect for fun
         mEntity = mManager.createEntity();
-        mEntity->addComponent<CTransform>().lock()->setPos(vec3(200,200,0));
+        mEntity->addComponent<Transform>()->setPos(vec3(200,200,0));
         mEntity->addComponent<RectComponent>( mFboDrawTarget );
         mEntity->addComponentWrapper<ci::Color>( 0.0f, 0.0f, 1.0f );
 
@@ -217,11 +227,11 @@ void EcsRenderingApp::setup()
     // create a second entity that will draw the result texture from the FboDrawTarget
     {
         mEntityB = mManager.createEntity();
-        mEntityB->addComponent<CTransform>().lock()->setPos(vec3(getWindowCenter(),0));
+        mEntityB->addComponent<Transform>()->setPos(vec3(getWindowCenter(),0));
         
         mEntityB->addComponent<TextureComponent>(mDefaultDrawTarget);
-        mEntityB->getComponent<TextureComponent>().lock()->setDrawTarget(nullptr);
-        mEntityB->getComponent<TextureComponent>().lock()->mTexture = mFboDrawTarget->targetFbo->getColorTexture();
+        mEntityB->getComponent<TextureComponent>()->setDrawTarget(nullptr);
+        mEntityB->getComponent<TextureComponent>()->mTexture = mFboDrawTarget->targetFbo->getColorTexture();
         
         mCustom = mManager.createEntity<MyCustomEntity>(100);
     }
@@ -235,15 +245,15 @@ void EcsRenderingApp::setup()
 void EcsRenderingApp::mouseMove( MouseEvent event )
 {
     if( mEntityB ){
-        mEntityB->getComponent<CTransform>().lock()->setPos( vec3( event.getPos(), 0.f ) );
+        mEntityB->getComponent<Transform>()->setPos( vec3( event.getPos(), 0.f ) );
     }
     
-        mCustom->getComponent<CTransform>().lock()->setPos(vec3( event.getPos(), 0.f ));
+        mCustom->getComponent<Transform>()->setPos(vec3( event.getPos(), 0.f ));
 }
 
 void EcsRenderingApp::update()
 {
-    mEntity->getComponent<CTransform>().lock()->setRotation(getElapsedFrames()*0.05f);
+    mEntity->getComponent<Transform>()->setRotation(getElapsedFrames()*0.05f);
     
     
     if( getElapsedFrames() % 10 == 0 ){
@@ -256,10 +266,10 @@ void EcsRenderingApp::update()
     if(  ui::Button("toogle draw target") ){
         
         
-        if(  mEntityB->getComponent<TextureComponent>().lock()->drawTargetOwner == nullptr ){
-            mEntityB->getComponent<TextureComponent>().lock()->setDrawTarget(mDefaultDrawTarget.get());
+        if(  mEntityB->getComponent<TextureComponent>()->drawTargetOwner == nullptr ){
+            mEntityB->getComponent<TextureComponent>()->setDrawTarget(mDefaultDrawTarget.get());
         }else{
-            mEntityB->getComponent<TextureComponent>().lock()->setDrawTarget( nullptr );
+            mEntityB->getComponent<TextureComponent>()->setDrawTarget( nullptr );
         }
         
     }
@@ -268,9 +278,6 @@ void EcsRenderingApp::update()
 void EcsRenderingApp::draw()
 {
 
-    
-    
-    
     gl::clear( Color::gray(0.1f) );
     gl::ScopedViewport sv( getWindowSize() );
     gl::setMatricesWindow( getWindowSize() );

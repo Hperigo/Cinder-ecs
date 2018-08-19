@@ -40,7 +40,7 @@ namespace ecs {
         inline void saveComponents( ci::JsonTree* json, ecs::EntityRef entity  ){
         
             for( auto& component : entity->getComponents() ){
-                component.lock()->getFactory()->save( json );
+                component->getFactory()->save( json );
             }
             
         }
@@ -49,7 +49,7 @@ namespace ecs {
             
             auto entityJson = ci::JsonTree::makeObject( std::to_string( entity->getId()) );
             
-            auto transformHandle =  entity->getComponent<Transform>().lock();
+            auto transformHandle =  entity->getComponent<Transform>();
             
             
             auto children =  transformHandle->getChildren();
@@ -57,7 +57,7 @@ namespace ecs {
             saveComponents(&entityJson, entity);
 
             if( transformHandle->hasParent() ){
-                auto parentJson = ci::JsonTree("parent_id",  transformHandle->getParent().lock()->getEntity().lock()->getId() );
+                auto parentJson = ci::JsonTree("parent_id",  transformHandle->getParent()->getEntity().lock()->getId() );
                 entityJson.addChild( parentJson );
             }
 
@@ -65,7 +65,7 @@ namespace ecs {
             
             for( auto& child : children ){
     
-                saveTree( json, child.lock()->getEntity().lock()  );
+                saveTree( json, child->getEntity().lock()  );
             }
         }
         
@@ -131,7 +131,7 @@ namespace ecs {
                 
                 
                 if(  parent != nullptr ){
-                    auto transformHandle = entityInfo.entity->getComponent<Transform>().lock();
+                    auto transformHandle = entityInfo.entity->getComponent<Transform>();
                     transformHandle->setParent( parent->getComponent<Transform>(), false  );
                 }
                 

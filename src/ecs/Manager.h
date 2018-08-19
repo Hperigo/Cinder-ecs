@@ -140,7 +140,9 @@ public:
 
             // erase components
             for( auto cIt = componentVector.begin(); cIt != componentVector.end(); ) {
-                if( (*cIt)->getEntity().expired() || ! (*cIt)->getEntity().lock()->isAlive() ){
+                
+                if( (*cIt)->getEntity().expired() || !(*cIt)->getEntity().lock()->isAlive() ){
+                    (*cIt)->onDestroy();
                     cIt = componentVector.erase(cIt);
                 }else{
                     ++cIt;
@@ -166,8 +168,17 @@ public:
         needsRefresh = false;
     }
 
-    void addComponent( ComponentID id, ComponentRef component){
+    void addComponent( ComponentID id, const ComponentRef component){
         mComponents[id].push_back( component );
+    }
+    
+    template<typename T>
+    void addComponent( const T& obj ){
+//        mComponents[id].push_back( component );
+//        mComponentsTuple
+        
+        
+        
     }
 
     template<typename T>
@@ -281,6 +292,8 @@ protected:
     bool needsRefresh{false};
     
     std::array< std::vector<ComponentRef>, MaxComponents> mComponents;
+    
+    std::tuple<> mComponentsTuple;
     
     std::vector<EntityRef> mEntities;
     std::vector<SystemRef> mSystems;

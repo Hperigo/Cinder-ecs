@@ -20,17 +20,14 @@ namespace ecs{
 
     using ComponentID = std::size_t;
     using ComponentRef = std::shared_ptr<Component>;
-    using ComponentHandle = std::weak_ptr<Component>;
 
-
-    constexpr std::size_t MaxComponents{32};
+    constexpr std::size_t MaxComponents{12};
     using ComponentBitset = std::bitset<MaxComponents>;
     
     namespace internal{
-        
-        inline ComponentID getUniqueComponentID() noexcept {
 
-            static ComponentID lastID{0};
+        static ComponentID lastID{0};
+        inline ComponentID getUniqueComponentID() noexcept {
             return lastID++;
         }
     
@@ -69,8 +66,6 @@ namespace ecs{
         std::weak_ptr<Entity> getEntity(){ return mEntity; }
         std::weak_ptr<Entity> getEntity() const { return mEntity; }
         Manager* getManager(){ return mManager; }
-
-        
 
 
         std::shared_ptr<internal::ComponentFactoryInterface> getFactory() { return mFactory; }

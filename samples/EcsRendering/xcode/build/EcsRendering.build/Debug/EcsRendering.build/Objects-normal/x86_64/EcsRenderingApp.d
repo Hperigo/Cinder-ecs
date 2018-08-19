@@ -621,6 +621,7 @@ dependencies: \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsRendering/src/EcsRenderingApp.cpp \
   ../../../../../include/cinder/app/RendererGl.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/include/CinderImGui.h \
+  ../../../../Cinder-ImGui/include/CinderImGuiExports.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/lib/imgui/imgui.h \
   ../../../../Cinder-ImGui/lib/imgui/imconfig.h \
   ../../../src/Utils/Factory.h ../../../src/ecs/Manager.h \
