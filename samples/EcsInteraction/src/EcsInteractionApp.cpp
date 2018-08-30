@@ -10,7 +10,7 @@
 #include "CinderImgui.h"
 
 
-#include "Button.h"
+#include "MouseInteraction.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -106,7 +106,7 @@ public:
             bt->getComponent<Button>()->onMouseUp = [&, i](const ci::app::MouseEvent& event){
                 
                 timeline().applyPtr(&radiusScale, 0.0f, 1.0, EaseInOutAtan() ).finishFn( [&] { mCurrentState = State::RECT; currentId = i;  } );
-                timeline().appendToPtr(&radiusScale, 4.0f, 1.0, EaseInOutAtan() );
+                timeline().appendToPtr(&radiusScale, 4.0f, 1.0, EaseOutAtan() );
                 
             };
             
@@ -222,9 +222,7 @@ void EcsInteractionApp::mouseDown( MouseEvent event )
 void EcsInteractionApp::update()
 {
     mManager->update();
-    
-    
-    
+   
 }
 
 void EcsInteractionApp::draw()

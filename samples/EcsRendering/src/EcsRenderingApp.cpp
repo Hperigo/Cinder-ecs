@@ -2,9 +2,13 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 
+#include "cinder/Path2d.h"
+
 #include "CinderImGui.h"
 
 #include "Utils/Factory.h"
+
+#include "DrawTargets.h"
 
 // add a particle system in the Fbo target, it needs to be set as not "drawable" other wise the system will be drawn twice, in the fbo and the default draw call in the manager
 #include "Particles.h"
@@ -74,8 +78,7 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
     void draw(){
         
         auto entity = getEntity().lock();
-
-
+        
         { // draw the generated texture
             gl::ScopedModelMatrix m;
             auto c = entity->getComponent<Transform>();
@@ -92,46 +95,6 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
 /// ------ end of components ------
 
 
-// simple FBo draw target, everything in it's mDrawables vector will be drawn into it's target fbo. The Draw target itself needs to be added in the manager default draw system
-struct FboDrawTarget : public ecs::DrawTarget{
-
-    FboDrawTarget(){
-        targetFbo = gl::Fbo::create(fboSize.x, fboSize.y);
-    }
-    
-    
-    void update() override {
-        /* we can use the update method to do some type of z-sorting, etc... */
-    }
-    
-    
-    void draw() override {
-        
-        {
-        
-            targetFbo->bindFramebuffer();
-
-            gl::clear( ci::Color(1,0,0) );
-            gl::ScopedMatrices sm;
-            gl::ScopedViewport sv( fboSize );
-            gl::setMatricesWindow(fboSize);
-
-            // set matrices, bind FBO etc...
-            for(auto& d : mDrawables){
-                d->draw();
-            }
-            
-            targetFbo->unbindFramebuffer();
-            
-        }
-        
-    }
-
-    vec2 fboSize {400,400};
-    gl::FboRef targetFbo;
-};
-
-
 class MyCustomEntity : public ecs::Entity, public  ecs::IDrawable {
     
 public:
@@ -143,7 +106,7 @@ public:
         App::get()->getSignalUpdate().connect( std::bind( &MyCustomEntity::customUpdateCall, this) );
         
         auto dt = getManager()->getDrawSystem()->getDefaultDrawTarget();
-        setDrawTarget( dt.get() );
+        setDrawTarget( dt );
         
         addComponent<Transform>();
     }
@@ -161,7 +124,7 @@ public:
         auto t = getComponent<Transform>();
         
 //        gl::multModelMatrix( t->getTransformMatrix() );
-        gl::color( Color(0.4, 0.4, 1.0) );
+        gl::color( Color(0.4, 0.4, 0.7) );
         gl::drawSolidCircle( t->getPos() , mRadius );
         
     }
@@ -186,9 +149,13 @@ class EcsRenderingApp : public App {
     std::shared_ptr<MyCustomEntity> mCustom;
     
     std::shared_ptr<FboDrawTarget> mFboDrawTarget;
+    
+    std::shared_ptr<BlurFboDrawTarget> mBlurDrawTarget;
+    
     std::shared_ptr<ecs::DrawTarget> mDefaultDrawTarget;
     
     std::shared_ptr<ParticleSystem> mParticleSystem;
+    
 };
 
 void EcsRenderingApp::setup()
@@ -199,6 +166,10 @@ void EcsRenderingApp::setup()
     mManager.getDrawSystem()->addDrawTarget( mFboDrawTarget );
 
     
+    mBlurDrawTarget = std::make_shared<BlurFboDrawTarget>( vec2( 500, 500 ), 0.5f );
+    mBlurDrawTarget->setClearColor( ColorA::gray(0.1f, 0.f) );
+    mManager.getDrawSystem()->addDrawTarget( mBlurDrawTarget );
+    
     auto e = mManager.createEntity();
     e->addComponent<RectComponent>();
     e->removeComponent<RectComponent>();
@@ -206,32 +177,31 @@ void EcsRenderingApp::setup()
     
     
     { // FBO target ------
-        
+
         // add a particle system to the draw target
         mParticleSystem = mManager.createSystem<ParticleSystem>();
-        mParticleSystem->setDrawTarget( mFboDrawTarget.get() );
+        mParticleSystem->setDrawTarget( mBlurDrawTarget );
         
         // create a rotating rect for fun
         mEntity = mManager.createEntity();
         mEntity->addComponent<Transform>()->setPos(vec3(200,200,0));
-        mEntity->addComponent<RectComponent>( mFboDrawTarget );
-        mEntity->addComponentWrapper<ci::Color>( 0.0f, 0.0f, 1.0f );
-
-        mDefaultDrawTarget = std::make_shared<ecs::DrawTarget>();
-        mManager.getDrawSystem()->addDrawTarget( mDefaultDrawTarget );
+        mEntity->addComponent<RectComponent>( mBlurDrawTarget );
+        mEntity->addComponent<ci::Color>( 0.1f, 0.1f, 0.2f );
 
     }
 
-    
-    
     // create a second entity that will draw the result texture from the FboDrawTarget
     {
+        
+        mDefaultDrawTarget = std::make_shared<ecs::DrawTarget>();
+        mManager.getDrawSystem()->addDrawTarget( mDefaultDrawTarget );
+        
         mEntityB = mManager.createEntity();
         mEntityB->addComponent<Transform>()->setPos(vec3(getWindowCenter(),0));
         
         mEntityB->addComponent<TextureComponent>(mDefaultDrawTarget);
-        mEntityB->getComponent<TextureComponent>()->setDrawTarget(nullptr);
-        mEntityB->getComponent<TextureComponent>()->mTexture = mFboDrawTarget->targetFbo->getColorTexture();
+//        mEntityB->getComponent<TextureComponent>()->setDrawTarget(nullptr);
+        mEntityB->getComponent<TextureComponent>()->mTexture = mBlurDrawTarget->getBluredFbo()->getColorTexture();
         
         mCustom = mManager.createEntity<MyCustomEntity>(100);
     }
@@ -266,13 +236,18 @@ void EcsRenderingApp::update()
     if(  ui::Button("toogle draw target") ){
         
         
-        if(  mEntityB->getComponent<TextureComponent>()->drawTargetOwner == nullptr ){
-            mEntityB->getComponent<TextureComponent>()->setDrawTarget(mDefaultDrawTarget.get());
+        if(  !mEntityB->getComponent<TextureComponent>()->hasDrawTarget() ){
+            mEntityB->getComponent<TextureComponent>()->setDrawTarget( mFboDrawTarget );
         }else{
             mEntityB->getComponent<TextureComponent>()->setDrawTarget( nullptr );
         }
         
     }
+    
+    
+    ui::DragFloat( "blur amt",  &mBlurDrawTarget->blurAmt, 0.01f );
+    ui::DragFloat( "att",  &mBlurDrawTarget->attenuation, 0.01f );
+    
 }
 
 void EcsRenderingApp::draw()
@@ -282,14 +257,15 @@ void EcsRenderingApp::draw()
     gl::ScopedViewport sv( getWindowSize() );
     gl::setMatricesWindow( getWindowSize() );
     
+    gl::enableAlphaBlending();
+    
     mManager.draw();
 
     {
         gl::color(ColorA(1.0f,1.0f,1.0f, 1.0f));
         gl::drawString( "Raw texture fetched from FBO draw target", vec2(10,10) );
-        gl::draw( mFboDrawTarget->targetFbo->getColorTexture() );
+        gl::draw( mBlurDrawTarget->getBluredFbo()->getColorTexture(), ci::Rectf( 0,0, mBlurDrawTarget->getInputSize().x, mBlurDrawTarget->getInputSize().y ) );
     }
-  
 }
 
 CINDER_APP( EcsRenderingApp, RendererGl )

@@ -71,7 +71,7 @@
 		BA781598B1344B3BA7DFD4C3 /* imgui_demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = imgui_demo.cpp; path = "../../../../_Cinder-ImGui/lib/imgui/imgui_demo.cpp"; sourceTree = "<group>"; };
 		BB54C15D6C314A3081AFF20C /* imgui_user.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = imgui_user.h; path = "../../../../_Cinder-ImGui/include/imgui_user.h"; sourceTree = "<group>"; };
 		BBA45AC62DC74D7AAB7F523C /* CinderImGui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = CinderImGui.cpp; path = "../../../../_Cinder-ImGui/src/CinderImGui.cpp"; sourceTree = "<group>"; };
-		BEFE46AD212115FA00998677 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Button.h; path = ../include/Button.h; sourceTree = "<group>"; };
+		BEFE46AD212115FA00998677 /* MouseInteraction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MouseInteraction.h; path = ../include/MouseInteraction.h; sourceTree = "<group>"; };
 		CD8F23E05B4C433191AC27AC /* Factory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Factory.h; path = ../../../src/Utils/Factory.h; sourceTree = "<group>"; };
 		E14ADCCF9BB743F7A1A3E8EE /* imgui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = "../../../../_Cinder-ImGui/lib/imgui/imgui.h"; sourceTree = "<group>"; };
 		F222C660B5554EFFB1A454C3 /* EcsInteraction_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = EcsInteraction_Prefix.pch; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				BEFE46AD212115FA00998677 /* Button.h */,
+				BEFE46AD212115FA00998677 /* MouseInteraction.h */,
 				534053A5BB804339B1538EFA /* EcsInteractionApp.cpp */,
 			);
 			name = Source;

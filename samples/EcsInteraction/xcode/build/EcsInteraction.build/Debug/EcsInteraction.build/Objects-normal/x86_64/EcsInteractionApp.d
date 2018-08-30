@@ -731,6 +731,6 @@ dependencies: \
   ../../../../../include/cinder/TimelineItem.h \
   ../../../../../include/cinder/Easing.h \
   ../../../../../include/cinder/Tween.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsInteraction/include/Button.h \
+  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsInteraction/include/MouseInteraction.h \
   ../../../../../include/cinder/Log.h \
   ../../../../../include/cinder/System.h

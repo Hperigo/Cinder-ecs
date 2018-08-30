@@ -11,13 +11,6 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 
-
-struct Test : ecs::Component {
-    
-    
-    
-};
-
 struct Particle : ecs::Component{
     
     Particle(){
@@ -30,12 +23,6 @@ struct Particle : ecs::Component{
     ci::vec2 pos;
     float lifetime = 10;
     
-    
-    void onDestroy() override {
-        
-        auto e = getEntity().lock();
-        e->removeComponent<Test>();
-    }
 };
 
 
@@ -49,9 +36,8 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
     }
     
     void update() override{
-        mParticles =  getManager()->getEntitiesWithComponents<Particle>();
-        
-        for(auto& e : mParticles ){
+
+        for(auto& e : getManager()->getEntitiesWithComponents<Particle>() ){
             
             auto particleHandle = e->getComponent<Particle>();
             
@@ -70,13 +56,11 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
     
     void draw() override {
         
-        for(auto& e : mParticles ){
+        for(auto& e : getManager()->getEntitiesWithComponents<Particle>() ){
             
             auto particle = e->getComponent<Particle>();
-            
             gl::ScopedModelMatrix m;
             gl::translate( particle->pos );
-            
             
             float size = particle->lifetime;
             gl::drawSolidRect(Rectf(-size,-size, size, size));
@@ -85,16 +69,11 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
         
     }
     
-    
     void addParticle( ci::vec2 pos ){
-        
         auto e = getManager()->createEntity();
         e->addComponent<Particle>( pos, Rand::randVec2() * 7.f );
-        e->addComponent<Test>();
-    
     }
-    
-    std::vector<ecs::EntityRef> mParticles;
+
 };
 
 
