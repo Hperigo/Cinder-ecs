@@ -25,11 +25,7 @@ namespace ecs{
         Entity( ) {
             mEntityId = mNumOfEntities;
             mNumOfEntities += 1;
-            
-            for(auto c : mComponentArray){
-                c = nullptr;
-            }
-            
+            mComponentArray.fill(nullptr);
         }
 
         virtual ~Entity(){
@@ -171,8 +167,9 @@ namespace ecs{
         inline std::vector< Component* > getComponents(){
             std::vector< Component* > components;
             
-            for( auto& c : mComponentArray ){
-                    components.push_back( c );
+            for( int i = 0; i < internal::lastID; i++ ){
+            
+                components.push_back( mComponentArray[i] );
             }
             
             return components;
@@ -213,7 +210,6 @@ namespace ecs{
             target = std::make_shared<T>(  *std::static_pointer_cast<T>( source ) );
         }
     };
-    
     
 }
 

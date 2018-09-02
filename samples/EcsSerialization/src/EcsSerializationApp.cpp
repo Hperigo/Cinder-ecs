@@ -67,13 +67,16 @@ struct ecs::ComponentFactoryTemplate<ColorComponent> : public ecs::ComponentFact
 
 struct RectComponent : public ecs::Component, public ecs::IDrawable{
     
-    ci::Rectf _r;
-    
-    RectComponent() : ecs::IDrawable(){
-        
-//        draw targets can be null, if you want to disable drawing in this component
-//        setDrawTarget( nullptr );
 
+    RectComponent() : ecs::IDrawable(){
+
+    }
+
+    void setup() override {
+        
+        auto drawTarget = getManager()->getDrawSystem()->getDefaultDrawTarget();
+        setDrawTarget( drawTarget );
+        
     }
     
     void draw() override{
@@ -83,12 +86,14 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
         gl::ScopedModelMatrix m;
         
         auto c = entity->getComponent<Transform>();
-        gl::multModelMatrix(c->getWorldCTransform());
+        gl::multModelMatrix(c->getWorldTransform());
         
         gl::ScopedColor sc( entity->getComponent<ColorComponent>()->_color );
         gl::drawSolidRect( _r );
 
     }
+    
+    ci::Rectf _r;
 };
 
 
@@ -155,7 +160,7 @@ void EcsSerializationApp::setup()
 
     
     tsys = mManager.createSystem<TransformSystem>();
-    mDrawSystem = mManager.createSystem<ecs::DrawSystem>();
+    mDrawSystem = mManager.getDrawSystem();
 
     tsys->setDrawable(false);
     auto e = ecs::EntityRef();
@@ -180,7 +185,7 @@ ecs::EntityRef EcsSerializationApp::createEntity(ecs::EntityRef &parent){
     auto color = e->addComponent<ColorComponent>();
     color->_color = Color(CM_HSV, randFloat(1), 1.0f, 0.5f);
     
-    auto drawTarget = ecs::DrawSystem::getDefaultDrawTarget();
+
     
     auto r = e->addComponent<RectComponent>();
     auto radius = 100.f;
@@ -220,11 +225,11 @@ void EcsSerializationApp::draw()
     ui::Text( "%s", ("number of Transforms: " + to_string( mManager.getComponents<RectComponent>().size() )).c_str() );
     ui::Text( "%s", ("number of Colors: " + to_string( mManager.getComponents<ColorComponent>().size() )).c_str() );
     
-    auto target = mDrawSystem->getDefaultDrawTarget();
+//    auto target = mDrawSystem->getDefaultDrawTarget();
     ui::Text( "%s", ("number of drawables: " + to_string( mManager.getComponents<ColorComponent>().size() )).c_str() );
     ui::Dummy({0, 10 });
     
-        ui::Text( "Transform tree" );
+    ui::Text( "Transform tree" );
            // console() << "----" << endl;
         int ii = 0;
         _activeEntity = nullptr;
@@ -246,7 +251,7 @@ void EcsSerializationApp::draw()
             ui::Dummy({0, 10 });
             ui::Text( "Active transform" );
             auto tComponent = _activeEntity->getComponent<Transform>();
-            ui::DrawTransform2D( tComponent, 10);
+            ui::DrawTransform2D( tComponent);
             auto cc = _activeEntity->getComponent<ColorComponent>();
             ui::Dummy({0, 10 });
             ui::ColorEdit3( "Color", &cc->_color[0] );
@@ -365,7 +370,7 @@ void EcsSerializationApp::draw()
     
     if( doDraw ){
         mManager.draw();
-      //  tsys->draw();
+        tsys->draw();
     }
 }
 

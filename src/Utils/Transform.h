@@ -280,18 +280,22 @@ struct ecs::ComponentFactoryTemplate<Transform> : public ecs::ComponentFactory<T
 
 namespace ImGui{
     
-    inline void DrawTransform2D( Transform* t, int i ){
+    inline void DrawTransform2D( Transform* t ){
         
-        ui::DragFloat3( (std::to_string(i) + " position").c_str(), &(*t->getPosPtr())[0]  );
-        ui::DragFloat3( (std::to_string(i) + " scale").c_str(), &(*t->getScalePtr())[0], 0.01f  );
-        ui::DragFloat3( (std::to_string(i) + " anchor pont").c_str(), &(*t->getAnchorPointPtr())[0], 0.01f  );
+        
+        ui::PushID( "t" );
+        ui::DragFloat3( " position",    &(*t->getPosPtr())[0]  );
+        ui::DragFloat3( " scale",       &(*t->getScalePtr())[0], 0.01f  );
+        ui::DragFloat3( " anchor pont", &(*t->getAnchorPointPtr())[0], 0.01f  );
         
         auto radians = t->getRotationRadians();
-        if(  ui::DragFloat( (std::to_string(i) + "rotation radians").c_str(), &radians, 0.01f ) ){
+        if(  ui::DragFloat( "rotation radians", &radians, 0.01f ) ){
             t->setRotation( radians );
         }
         
         t->updateMatrices();
+        
+        ui::PopID();
     }
     
     ecs::EntityRef DrawTree(const Transform* root );

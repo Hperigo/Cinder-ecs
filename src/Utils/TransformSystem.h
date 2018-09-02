@@ -17,12 +17,14 @@ struct TransformSystem : ecs::System{
     void update() override{
         
         auto& transforms = getManager()->getComponentsArray<Transform>();
-        for(auto& c : transforms){
-            
-            auto t = static_pointer_cast<Transform>(c);
+        for(auto& t : transforms){
+
             if(t->needsUpdate()){
                t->updateMatrices();
             }
+            
+//            auto t = static_pointer_cast<Transform>(c);
+
         }
     }
     
@@ -33,10 +35,8 @@ struct TransformSystem : ecs::System{
         auto transforms = getManager()->getComponentsArray<Transform>();
 
         
-        for( auto& handle : transforms ){
+        for( auto& trans : transforms ){
 
-            auto trans = static_pointer_cast<Transform>( handle );
-            
             // draw parent child relation
             if( trans->hasParent() ){
                 
@@ -50,7 +50,7 @@ struct TransformSystem : ecs::System{
                 // draw AnchorPoint
                 ci::gl::ScopedModelMatrix m;
                 ci::gl::translate( trans->getWorldPos() );
-                gl::drawSolidRect( { -5,-5, 5,5 }  );
+                ci::gl::drawSolidRect( { -5,-5, 5,5 }  );
             
             }
             

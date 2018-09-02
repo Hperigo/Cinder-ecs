@@ -38,11 +38,11 @@ namespace ecs {
         
         
         inline void saveComponents( ci::JsonTree* json, ecs::EntityRef entity  ){
-        
-            for( auto& component : entity->getComponents() ){
+            auto components = entity->getComponents();
+            for( auto& component : components  ){
                 component->getFactory()->save( json );
             }
-            
+
         }
         inline void saveTree( ci::JsonTree* json, ecs::EntityRef entity, unsigned int depth = 0){
             

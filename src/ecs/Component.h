@@ -121,11 +121,8 @@ namespace ecs{
             }
             
         void copyComponent(const Component* source, Component* target) override{
-//            *source = T( *((T*)source) ); // cast
-            
             T object = *((T*)source);
             T* sourceObj = (T*)source;
-            
             *sourceObj = *((T*)source);
         }
             

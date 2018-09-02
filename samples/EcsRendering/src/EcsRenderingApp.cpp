@@ -129,24 +129,6 @@ public:
     float mRadius = 1.0f;
 };
 
-struct A {
-    
-    virtual void say(){
-        console() << "AAA" << endl;
-    }
-};
-
-struct B : public A{
-  
-    
-    void say() override {
-        
-        console() << "BBB" << endl;
-    }
-    
-};
-
-
 class EcsRenderingApp : public App {
   public:
 	void setup() override;
@@ -185,21 +167,6 @@ void EcsRenderingApp::setup()
     mBlurDrawTarget->setClearColor( ColorA::gray(0.91f, 0.f) );
     mManager.getDrawSystem()->addDrawTarget( mBlurDrawTarget );
     
-    
-    { // testbed, should move this to another sample / project
-        auto e = mManager.createEntity();
-        e->addComponent<A>();
-        
-        console() << e->hasComponent<A>() << endl;
-        e->removeComponent<A>();
-        
-        console() << e->hasComponent<A>() << endl;
-        
-        ecs::ComponentID id = ecs::getComponentTypeID<ecs::WrapperComponent<A>>();
-        console() << id << endl;
-        
-        e->destroy();
-    }
 
     { // FBO target ------
 

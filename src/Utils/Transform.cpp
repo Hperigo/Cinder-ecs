@@ -378,7 +378,6 @@ void Transform::descendTree(const std::function<void (Transform* &, Transform* &
 
 ecs::EntityRef ImGui::DrawTree(const Transform* iTransform){
     
-
     static int selection_mask = (1 << 0);
     int node_clicked = -1;
     
@@ -387,9 +386,8 @@ ecs::EntityRef ImGui::DrawTree(const Transform* iTransform){
     
     std::function<void(const Transform*)> drawChildren = [&](const Transform* root ){
         
-//        if( root == nullptr ){
-//            return;
-//        }
+        
+        ui::PushID("id");
         
         auto rootId = root->getEntity().lock()->getId();
         auto id_text = "e id: " + std::to_string( rootId );
@@ -427,6 +425,9 @@ ecs::EntityRef ImGui::DrawTree(const Transform* iTransform){
                 node_clicked = rootId;
             }
         }
+        
+        
+        ui::PopID();
     }; // end of lambda
     
 
