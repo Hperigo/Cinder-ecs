@@ -20,11 +20,7 @@ using namespace std;
 
 // Some basic components
 
-struct  ColorComponent : public ecs::Component{
-    
-    ColorComponent() = default;
-    ColorComponent( ci::Color e  ) : _color(e) { }
-    
+struct  ColorComponent{
     ci::Color _color;
 };
 
@@ -133,6 +129,23 @@ public:
     float mRadius = 1.0f;
 };
 
+struct A {
+    
+    virtual void say(){
+        console() << "AAA" << endl;
+    }
+};
+
+struct B : public A{
+  
+    
+    void say() override {
+        
+        console() << "BBB" << endl;
+    }
+    
+};
+
 
 class EcsRenderingApp : public App {
   public:
@@ -144,18 +157,20 @@ class EcsRenderingApp : public App {
     
     ecs::Manager mManager;
     
+    
+    // entities ----
     ecs::EntityRef mEntity;
     ecs::EntityRef mEntityB;
     std::shared_ptr<MyCustomEntity> mCustom;
-    
-    std::shared_ptr<FboDrawTarget> mFboDrawTarget;
-    
-    std::shared_ptr<BlurFboDrawTarget> mBlurDrawTarget;
-    
-    std::shared_ptr<ecs::DrawTarget> mDefaultDrawTarget;
-    
+
+    // systems -----
     std::shared_ptr<ParticleSystem> mParticleSystem;
     
+    // draw targets ---
+    std::shared_ptr<FboDrawTarget> mFboDrawTarget;
+    std::shared_ptr<BlurFboDrawTarget> mBlurDrawTarget;
+    std::shared_ptr<ecs::DrawTarget> mDefaultDrawTarget;
+
 };
 
 void EcsRenderingApp::setup()
@@ -167,15 +182,25 @@ void EcsRenderingApp::setup()
 
     
     mBlurDrawTarget = std::make_shared<BlurFboDrawTarget>( vec2( 500, 500 ), 0.5f );
-    mBlurDrawTarget->setClearColor( ColorA::gray(0.1f, 0.f) );
+    mBlurDrawTarget->setClearColor( ColorA::gray(0.91f, 0.f) );
     mManager.getDrawSystem()->addDrawTarget( mBlurDrawTarget );
     
-    auto e = mManager.createEntity();
-    e->addComponent<RectComponent>();
-    e->removeComponent<RectComponent>();
-    e->destroy();
     
-    
+    { // testbed, should move this to another sample / project
+        auto e = mManager.createEntity();
+        e->addComponent<A>();
+        
+        console() << e->hasComponent<A>() << endl;
+        e->removeComponent<A>();
+        
+        console() << e->hasComponent<A>() << endl;
+        
+        ecs::ComponentID id = ecs::getComponentTypeID<ecs::WrapperComponent<A>>();
+        console() << id << endl;
+        
+        e->destroy();
+    }
+
     { // FBO target ------
 
         // add a particle system to the draw target
@@ -200,16 +225,18 @@ void EcsRenderingApp::setup()
         mEntityB->addComponent<Transform>()->setPos(vec3(getWindowCenter(),0));
         
         mEntityB->addComponent<TextureComponent>(mDefaultDrawTarget);
-//        mEntityB->getComponent<TextureComponent>()->setDrawTarget(nullptr);
         mEntityB->getComponent<TextureComponent>()->mTexture = mBlurDrawTarget->getBluredFbo()->getColorTexture();
         
         mCustom = mManager.createEntity<MyCustomEntity>(100);
     }
     
-    ecs::factory::initialize(mManager);
+//    ecs::factory::initialize(mManager);
+    
     ui::initialize();
     
     console() << "initialized!" << "💊" << std::endl;
+    
+    mManager.setup();
 }
 
 void EcsRenderingApp::mouseMove( MouseEvent event )
@@ -229,31 +256,19 @@ void EcsRenderingApp::update()
     if( getElapsedFrames() % 10 == 0 ){
         
         mParticleSystem->addParticle( { 200,200 } );
-        
     }
-    
-    
-    if(  ui::Button("toogle draw target") ){
-        
-        
-        if(  !mEntityB->getComponent<TextureComponent>()->hasDrawTarget() ){
-            mEntityB->getComponent<TextureComponent>()->setDrawTarget( mFboDrawTarget );
-        }else{
-            mEntityB->getComponent<TextureComponent>()->setDrawTarget( nullptr );
-        }
-        
-    }
-    
     
     ui::DragFloat( "blur amt",  &mBlurDrawTarget->blurAmt, 0.01f );
     ui::DragFloat( "att",  &mBlurDrawTarget->attenuation, 0.01f );
+    
+    mManager.update();
     
 }
 
 void EcsRenderingApp::draw()
 {
 
-    gl::clear( Color::gray(0.1f) );
+    gl::clear( Color::gray(0.91f) );
     gl::ScopedViewport sv( getWindowSize() );
     gl::setMatricesWindow( getWindowSize() );
     

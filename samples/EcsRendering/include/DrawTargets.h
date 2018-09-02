@@ -10,17 +10,16 @@
 
 #include "cinder/gl/gl.h"
 
-using namespace ci;
 
 // simple FBo draw target, everything in it's mDrawables vector will be drawn into it's target fbo. The Draw target itself needs to be added in the manager default draw system
 struct FboDrawTarget : public ecs::DrawTarget{
     
     FboDrawTarget(){
-        targetFbo = gl::Fbo::create( 300, 300);
+        targetFbo = ci::gl::Fbo::create( 300, 300);
     }
     
-    FboDrawTarget( const vec2& iSize, const gl::Fbo::Format& iFormat ){
-        targetFbo = gl::Fbo::create(iSize.x, iSize.y, iFormat);
+    FboDrawTarget( const glm::vec2& iSize, const ci::gl::Fbo::Format& iFormat ){
+        targetFbo = ci::gl::Fbo::create(iSize.x, iSize.y, iFormat);
     }
     
     
@@ -32,13 +31,13 @@ struct FboDrawTarget : public ecs::DrawTarget{
     void draw() override {
         
         {
-            vec2 fboSize = targetFbo->getSize();
+            glm::vec2 fboSize = targetFbo->getSize();
             targetFbo->bindFramebuffer();
             
-            gl::clear( ci::Color(0.5,0.1,0.3) );
-            gl::ScopedMatrices sm;
-            gl::ScopedViewport sv( fboSize );
-            gl::setMatricesWindow(fboSize);
+            ci::gl::clear( ci::Color(0.5,0.1,0.3) );
+            ci::gl::ScopedMatrices sm;
+            ci::gl::ScopedViewport sv( fboSize );
+            ci::gl::setMatricesWindow(fboSize);
             
             // set matrices, bind FBO etc...
             for(auto& d : mDrawables){
@@ -49,28 +48,28 @@ struct FboDrawTarget : public ecs::DrawTarget{
         
     }
     
-    gl::FboRef getFbo(){ return targetFbo; }
+    ci::gl::FboRef getFbo(){ return targetFbo; }
     
 protected:
-    gl::FboRef targetFbo;
+    ci::gl::FboRef targetFbo;
 };
 
 // blurs everything that it's on the draw call
 class BlurFboDrawTarget : public ecs::DrawTarget {
     
 public:
-    BlurFboDrawTarget( ivec2 size, float targetScale = 1.0f) {
+    BlurFboDrawTarget( glm::ivec2 size, float targetScale = 1.0f) {
         
-        auto format = gl::Fbo::Format();
-        mBlurFbo = gl::Fbo::create( size.x * targetScale , size.y * targetScale, format);
-        mTempFbo = gl::Fbo::create( size.x * targetScale , size.y * targetScale, format);
+        auto format = ci::gl::Fbo::Format();
+        mBlurFbo = ci::gl::Fbo::create( size.x * targetScale , size.y * targetScale, format);
+        mTempFbo = ci::gl::Fbo::create( size.x * targetScale , size.y * targetScale, format);
         
         mClearColor = ci::ColorA::black();
         mClearColor.a = 0.0f;
         mTargetScale = targetScale;
         
         
-        string vertShader = R"(#version 150
+        std::string vertShader = R"(#version 150
         uniform mat4 ciModelViewProjection;
         in vec4 ciPosition;
         in vec2 ciTexCoord0;
@@ -81,7 +80,7 @@ public:
             gl_Position = ciModelViewProjection * ciPosition;
         })"; // end of vert shader
         
-        string fragShader = R"(
+        std::string fragShader = R"(
 #version 150
         
         uniform sampler2D    tex0;
@@ -120,7 +119,7 @@ public:
             oColor.rgba = attenuation * sum;
         })";
         
-        mBlurShader = gl::GlslProg::create( vertShader, fragShader );
+        mBlurShader = ci::gl::GlslProg::create( vertShader, fragShader );
     }
     
     
@@ -134,15 +133,15 @@ public:
         
         
         {  // draw first pass and scene to the main fbo
-            vec2 fboSize = mBlurFbo->getSize();
+            glm::vec2 fboSize = mBlurFbo->getSize();
             mBlurFbo->bindFramebuffer();
             
-            gl::clear( mClearColor );
-            gl::ScopedMatrices sm;
-            gl::ScopedViewport sv( fboSize );
-            gl::setMatricesWindow(fboSize);
+            ci::gl::clear( mClearColor );
+            ci::gl::ScopedMatrices sm;
+            ci::gl::ScopedViewport sv( fboSize );
+            ci::gl::setMatricesWindow(fboSize);
             
-            gl::scale( vec3(  mTargetScale  ) );
+            ci::gl::scale( glm::vec3(  mTargetScale  ) );
             
             // set matrices, bind FBO etc...
             for(auto& d : mDrawables){
@@ -155,24 +154,24 @@ public:
 
         { // do first blur pass  ( horizontal ... )
             
-            gl::ScopedGlslProg sShader( mBlurShader );
+            ci::gl::ScopedGlslProg sShader( mBlurShader );
             
             mBlurShader->uniform("tex0", 0);
-            mBlurShader->uniform("sample_offset",  vec2( blurAmt / mBlurFbo->getWidth(), 0.0f  )  );
+            mBlurShader->uniform("sample_offset",  glm::vec2( blurAmt / mBlurFbo->getWidth(), 0.0f  )  );
             mBlurShader->uniform("attenuation", attenuation );
             
             
-            vec2 fboSize = mTempFbo->getSize();
+            glm::vec2 fboSize = mTempFbo->getSize();
             mTempFbo->bindFramebuffer();
             
-            gl::clear( mClearColor );
-            gl::ScopedMatrices sm;
-            gl::ScopedViewport sv( fboSize );
-            gl::setMatricesWindow(fboSize);
-            gl::ScopedTextureBind st( mBlurFbo->getColorTexture() );
+            ci::gl::clear( mClearColor );
+            ci::gl::ScopedMatrices sm;
+            ci::gl::ScopedViewport sv( fboSize );
+            ci::gl::setMatricesWindow(fboSize);
+            ci::gl::ScopedTextureBind st( mBlurFbo->getColorTexture() );
             
             
-            gl::drawSolidRect( Rectf( 0,0,fboSize.x, fboSize.y ) );
+            ci::gl::drawSolidRect( ci::Rectf( 0,0,fboSize.x, fboSize.y ) );
             
             mTempFbo->unbindFramebuffer();
             
@@ -180,22 +179,22 @@ public:
         
         { // do last pass ( vertical ... )
             
-            gl::ScopedGlslProg sShader( mBlurShader );
+            ci::gl::ScopedGlslProg sShader( mBlurShader );
             
             mBlurShader->uniform("tex0", 0);
-            mBlurShader->uniform("sample_offset",  vec2( 0.0f,  blurAmt /  mBlurFbo->getHeight() )  );
+            mBlurShader->uniform("sample_offset",  glm::vec2( 0.0f,  blurAmt /  mBlurFbo->getHeight() )  );
             mBlurShader->uniform("attenuation", attenuation );
             
-            vec2 fboSize = mBlurFbo->getSize();
+            glm::vec2 fboSize = mBlurFbo->getSize();
             mBlurFbo->bindFramebuffer();
             
-            gl::clear( mClearColor );
-            gl::ScopedMatrices sm;
-            gl::ScopedViewport sv( fboSize );
-            gl::setMatricesWindow(fboSize);
-            gl::ScopedTextureBind st( mTempFbo->getColorTexture() );
+            ci::gl::clear( mClearColor );
+            ci::gl::ScopedMatrices sm;
+            ci::gl::ScopedViewport sv( fboSize );
+            ci::gl::setMatricesWindow(fboSize);
+            ci::gl::ScopedTextureBind st( mTempFbo->getColorTexture() );
             
-            gl::drawSolidRect( Rectf( 0,0,fboSize.x, fboSize.y ) );
+            ci::gl::drawSolidRect( ci::Rectf( 0,0,fboSize.x, fboSize.y ) );
             
             mBlurFbo->unbindFramebuffer();
         }
@@ -203,12 +202,12 @@ public:
     }
     
     
-    gl::FboRef getBluredFbo() const {
+    ci::gl::FboRef getBluredFbo() const {
         return mBlurFbo;
     }
     
-    vec2 getInputSize() const {
-        return vec2(mBlurFbo->getSize()) / mTargetScale;
+    glm::vec2 getInputSize() const {
+        return glm::vec2(mBlurFbo->getSize()) / mTargetScale;
     }
     
     void setClearColor( const ci::ColorA& iColor  ) { mClearColor = iColor; }
@@ -221,11 +220,11 @@ protected:
                       
     ci::ColorA mClearColor;
     
-    gl::FboRef mBlurFbo;
-    gl::FboRef mTempFbo;
+    ci::gl::FboRef mBlurFbo;
+    ci::gl::FboRef mTempFbo;
     
     
-    gl::GlslProgRef mBlurShader;
+    ci::gl::GlslProgRef mBlurShader;
 };
 
 
