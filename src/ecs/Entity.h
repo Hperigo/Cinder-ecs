@@ -56,6 +56,7 @@ namespace ecs{
         template<typename T>
         T* addComponent() {
             
+            //@Todo: Move constexpr to something c++14
             if constexpr ( std::is_base_of<Component, T>::value == false ){
                 
                 std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T() ) );
@@ -90,7 +91,8 @@ namespace ecs{
         template<typename T, typename... TArgs>
         T* addComponent(TArgs&&... _Args) {
 
-             if constexpr ( std::is_base_of<Component, T>::value == false ){
+            //@Todo: Move constexpr to something c++14
+            if constexpr ( std::is_base_of<Component, T>::value == false ){
                 
                 std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T(std::forward<TArgs>(_Args)... )) );
                 
@@ -130,10 +132,10 @@ namespace ecs{
 
         template<typename T>
         void removeComponent(){
-
-
-            auto componentTypeID = getComponentTypeID<T>();
-
+            
+            ComponentID componentTypeID;
+            componentTypeID = getComponentTypeID<T>();
+    
             mComponentBitset.set(componentTypeID, 0);
             mComponentArray [ componentTypeID ]->mEntity = std::weak_ptr<Entity>();/**/
             mComponentArray [ componentTypeID ] = nullptr;

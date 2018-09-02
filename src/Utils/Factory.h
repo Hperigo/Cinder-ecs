@@ -13,7 +13,7 @@
 
 
 #include "cinder/Json.h"
-#include "cinder/App/AppBase.h"
+#include "cinder/app/AppBase.h"
 
 namespace ecs {
     namespace factory{
@@ -126,7 +126,7 @@ namespace ecs {
                 try{
                     parent = entityMap.at( entityInfo.parentId ).entity;
                 }catch(std::exception &e){
-                    console() << e.what() << endl;
+                    ci::app::console() << e.what() << std::endl;
                 }
                 
                 

@@ -16,9 +16,12 @@
 
 namespace ecs{
     
-    // Inteface for drawble object
+    // foward declare
     class DrawTarget;
+    
+    // Interface for drawble object
     struct IDrawable {
+        
         IDrawable();
         IDrawable( DrawTarget* iDrawTarget );
         virtual ~IDrawable();
@@ -85,7 +88,7 @@ namespace ecs{
     
     
     
-    
+    // Actually performs the drawing
     class DrawSystem : public ecs::System{
         
     public:

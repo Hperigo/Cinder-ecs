@@ -21,7 +21,7 @@ namespace ecs{
     using ComponentID = std::size_t;
     using ComponentRef = std::shared_ptr<Component>;
 
-    constexpr std::size_t MaxComponents{12};
+    constexpr std::size_t MaxComponents{120};
     using ComponentBitset = std::bitset<MaxComponents>;
     
     namespace internal{
@@ -44,17 +44,19 @@ namespace ecs{
         struct EntityInfoBase{
             virtual void copy(const EntityRef& source, EntityRef& target) = 0;
         };
+        
+        template <typename T>
+        inline ComponentID getComponentTypeID() noexcept {
+            
+            static ComponentID typeID { internal::getUniqueComponentID() };
+            return typeID;
+            
+        }
     }
     
 
 
-    template <typename T>
-    inline ComponentID getComponentTypeID() noexcept {
 
-        static ComponentID typeID { internal::getUniqueComponentID() };
-        return typeID;
-
-    }
 
     struct Component {
 
@@ -97,6 +99,18 @@ namespace ecs{
         
         T object;
     };
+    
+    
+    template <typename T>
+    inline ComponentID getComponentTypeID() noexcept {
+        
+        if constexpr ( std::is_base_of<Component, T>::value == true ){
+            return internal::getComponentTypeID<T>();
+        }else{
+            return internal::getComponentTypeID< WrapperComponent<T> >();
+        }
+    }
+    
     
     template<class T>
     struct ComponentFactory :  public internal::ComponentFactoryInterface{
