@@ -39,7 +39,6 @@ struct ecs::ComponentFactoryTemplate<ColorComponent> : public ecs::ComponentFact
         
     }
     
-    
     void load(void* archiver) override {
         
         console() << "color loading..." << std::endl;
@@ -219,18 +218,14 @@ void EcsSerializationApp::draw()
     gl::clear( Color::gray(0.3f) );
 
     ui::Text( "%f", getAverageFps());
-
     ui::Text( "%s", ( "number of entities: " +  to_string( mManager.getEntities().size() )).c_str()  );
-    
     ui::Text( "%s", ("number of Transforms: " + to_string( mManager.getComponents<RectComponent>().size() )).c_str() );
     ui::Text( "%s", ("number of Colors: " + to_string( mManager.getComponents<ColorComponent>().size() )).c_str() );
     
-//    auto target = mDrawSystem->getDefaultDrawTarget();
     ui::Text( "%s", ("number of drawables: " + to_string( mManager.getComponents<ColorComponent>().size() )).c_str() );
     ui::Dummy({0, 10 });
     
     ui::Text( "Transform tree" );
-           // console() << "----" << endl;
         int ii = 0;
         _activeEntity = nullptr;
         auto entities = mManager.getEntitiesWithComponents<Transform>();

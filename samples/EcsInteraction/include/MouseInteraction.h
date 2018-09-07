@@ -125,7 +125,7 @@ struct MouseInputSystem : public ecs::System {
             auto button =  e->getComponent<Button>();
             auto transform = e->getComponent<Transform>();
  
-            vec2 transformedPoint;
+            ci::vec2 transformedPoint;
             ci::mat4 inverdedMatrix  = glm::inverse(transform->getWorldTransform());
             auto p = inverdedMatrix * glm::vec4( iEvent.getX(), iEvent.getY(), 0.0f, 1.0f);
             transformedPoint.x = p.x;
@@ -160,7 +160,7 @@ struct MouseInputSystem : public ecs::System {
             auto button =  e->getComponent<Button>();
             auto transform = e->getComponent<Transform>();
             
-            vec2 transformedPoint;
+            ci::vec2 transformedPoint;
             ci::mat4 inverdedMatrix  = glm::inverse(transform->getWorldTransform());
             auto p = inverdedMatrix * glm::vec4( iEvent.getX(), iEvent.getY(), 0.0f, 1.0f);
             transformedPoint.x = p.x;

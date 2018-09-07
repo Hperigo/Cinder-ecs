@@ -43,6 +43,9 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
         
         auto entity = getEntity().lock();
         
+        if(!entity){
+            return;
+        }
         gl::ScopedModelMatrix m;
         
         auto c = entity->getComponent<Transform>();
@@ -75,7 +78,7 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
         
         auto entity = getEntity().lock();
         
-        { // draw the generated texture
+        if(entity){ // draw the generated texture
             gl::ScopedModelMatrix m;
             auto c = entity->getComponent<Transform>();
             gl::multModelMatrix(c->getWorldTransform());
@@ -100,9 +103,7 @@ public:
     void setup() override {
         
         App::get()->getSignalUpdate().connect( std::bind( &MyCustomEntity::customUpdateCall, this) );
-        
-        auto dt = getManager()->getDrawSystem()->getDefaultDrawTarget();
-        setDrawTarget( dt );
+//        setDrawTarget( ecs::DrawSystem::getInstance()->getDefaultDrawTarget() );
         
         addComponent<Transform>();
     }
@@ -160,12 +161,12 @@ void EcsRenderingApp::setup()
 
     // create and add the FBO draw target to the default manager draw system. The draw system is just a collection of draw targets, you can have a Fbo draw target, scissor draw target or pass-trought
     mFboDrawTarget = std::make_shared<FboDrawTarget>();
-    mManager.getDrawSystem()->addDrawTarget( mFboDrawTarget );
+    ecs::DrawSystem::getInstance()->addDrawTarget( mFboDrawTarget );
 
     
     mBlurDrawTarget = std::make_shared<BlurFboDrawTarget>( vec2( 500, 500 ), 0.5f );
     mBlurDrawTarget->setClearColor( ColorA::gray(0.91f, 0.f) );
-    mManager.getDrawSystem()->addDrawTarget( mBlurDrawTarget );
+    ecs::DrawSystem::getInstance()->addDrawTarget( mBlurDrawTarget );
     
 
     { // FBO target ------
@@ -186,12 +187,12 @@ void EcsRenderingApp::setup()
     {
         
         mDefaultDrawTarget = std::make_shared<ecs::DrawTarget>();
-        mManager.getDrawSystem()->addDrawTarget( mDefaultDrawTarget );
+        ecs::DrawSystem::getInstance()->addDrawTarget( mDefaultDrawTarget );
         
         mEntityB = mManager.createEntity();
         mEntityB->addComponent<Transform>()->setPos(vec3(getWindowCenter(),0));
         
-        mEntityB->addComponent<TextureComponent>(mDefaultDrawTarget);
+        mEntityB->addComponent<TextureComponent>();
         mEntityB->getComponent<TextureComponent>()->mTexture = mBlurDrawTarget->getBluredFbo()->getColorTexture();
         
         mCustom = mManager.createEntity<MyCustomEntity>(100);
