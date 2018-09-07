@@ -620,6 +620,7 @@ dependencies: \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsRendering/xcode/EcsRendering_Prefix.pch \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/src/CinderImGui.cpp \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/include/CinderImGui.h \
+  ../../../../Cinder-ImGui/include/CinderImGuiExports.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/lib/imgui/imgui.h \
   ../../../../Cinder-ImGui/lib/imgui/imconfig.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/lib/imgui/imgui_internal.h \

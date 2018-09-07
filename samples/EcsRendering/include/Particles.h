@@ -11,6 +11,11 @@
 #include "cinder/Rand.h"
 #include "cinder/gl/gl.h"
 
+
+#include "cinder/Timer.h"
+
+using namespace ci;
+
 struct Particle : ecs::Component{
     
     Particle(){
@@ -21,7 +26,8 @@ struct Particle : ecs::Component{
     
     ci::vec2 speed;
     ci::vec2 pos;
-    float lifetime = 10;
+    float lifetime = ci::Rand::randFloat(5, 20);
+    
 };
 
 
@@ -35,11 +41,14 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
     }
     
     void update() override{
-        mParticles =  getManager()->getEntitiesWithComponents<Particle>();
+
+        ci::Timer t;
+        t.start();
+        auto ent = getManager()->getComponentsArray<Particle>();
         
-        for(auto& e : mParticles ){
+        for(auto& e : ent ){
             
-            auto particleHandle = e->getComponent<Particle>().lock();
+            auto particleHandle = e;
             
             particleHandle->speed *= 0.94;
             particleHandle->pos   += particleHandle->speed;
@@ -47,40 +56,33 @@ struct ParticleSystem : public ecs::System, public ecs::IDrawable{
             particleHandle->lifetime -= 0.1;
             
             if( particleHandle->lifetime < 0 ){
-                e->destroy();
+                auto entHandle = particleHandle->getEntity().lock();
+                particleHandle->getEntity().lock()->destroy();
             }
         }
-        
     }
     
     
     void draw() override {
         
-        for(auto& e : mParticles ){
-            
-            auto particle = e->getComponent<Particle>().lock();
-            
+        for(auto& e : getManager()->getEntitiesWithComponents<Particle>() ){
+
+            auto particle = e->getComponent<Particle>();
             gl::ScopedModelMatrix m;
             gl::translate( particle->pos );
-            
-            
+
             float size = particle->lifetime;
             gl::drawSolidRect(Rectf(-size,-size, size, size));
-            
+
         }
         
     }
     
-    
     void addParticle( ci::vec2 pos ){
-        
         auto e = getManager()->createEntity();
         e->addComponent<Particle>( pos, Rand::randVec2() * 7.f );
-        
-        
     }
-    
-    std::vector<ecs::EntityRef> mParticles;
+
 };
 
 

@@ -20,22 +20,19 @@ namespace ecs{
 
     using ComponentID = std::size_t;
     using ComponentRef = std::shared_ptr<Component>;
-    using ComponentHandle = std::weak_ptr<Component>;
 
-
-    constexpr std::size_t MaxComponents{32};
+    constexpr std::size_t MaxComponents{120};
     using ComponentBitset = std::bitset<MaxComponents>;
     
     namespace internal{
-        
-        inline ComponentID getUniqueComponentID() noexcept {
 
-            static ComponentID lastID{0};
+        static ComponentID lastID{0};
+        inline ComponentID getUniqueComponentID() noexcept {
             return lastID++;
         }
     
         struct ComponentFactoryInterface : public std::enable_shared_from_this<ComponentFactoryInterface> {
-            virtual void copyComponent(ComponentRef& source, ComponentRef& target){};
+            virtual void copyComponent(const Component* source, Component* target){};
             virtual void load(void* archiver){};
             virtual void save(void* archiver){};
             virtual ComponentRef create() = 0;
@@ -47,17 +44,19 @@ namespace ecs{
         struct EntityInfoBase{
             virtual void copy(const EntityRef& source, EntityRef& target) = 0;
         };
+        
+        template <typename T>
+        inline ComponentID getComponentTypeID() noexcept {
+            
+            static ComponentID typeID { internal::getUniqueComponentID() };
+            return typeID;
+            
+        }
     }
     
 
 
-    template <typename T>
-    inline ComponentID getComponentTypeID() noexcept {
 
-        static ComponentID typeID { internal::getUniqueComponentID() };
-        return typeID;
-
-    }
 
     struct Component {
 
@@ -67,9 +66,8 @@ namespace ecs{
 
 
         std::weak_ptr<Entity> getEntity(){ return mEntity; }
+        std::weak_ptr<Entity> getEntity() const { return mEntity; }
         Manager* getManager(){ return mManager; }
-
-        
 
 
         std::shared_ptr<internal::ComponentFactoryInterface> getFactory() { return mFactory; }
@@ -102,18 +100,30 @@ namespace ecs{
         T object;
     };
     
+    
+    template <typename T>
+    inline ComponentID getComponentTypeID() noexcept {
+        
+        if constexpr ( std::is_base_of<Component, T>::value == true ){
+            return internal::getComponentTypeID<T>();
+        }else{
+            return internal::getComponentTypeID< WrapperComponent<T> >();
+        }
+    }
+    
+    
     template<class T>
     struct ComponentFactory :  public internal::ComponentFactoryInterface{
-            
-            
+        
             ComponentFactory() {
-                
                 owner = &object;
                 _id = getComponentTypeID<T>();
             }
             
-        void copyComponent( ComponentRef& source, ComponentRef& target) override{
-            target = std::make_shared<T>(  *std::static_pointer_cast<T>( source ) );
+        void copyComponent(const Component* source, Component* target) override{
+            T object = *((T*)source);
+            T* sourceObj = (T*)source;
+            *sourceObj = *((T*)source);
         }
             
         

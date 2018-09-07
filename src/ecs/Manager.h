@@ -14,11 +14,6 @@
 
 #include "Utils/DrawSystem.h"
 
-#include "cinder/app/AppBase.h"
-
-using namespace ci;
-using namespace ci::app;
-using namespace std;
 
 namespace  ecs{
     using ManagerRef = std::shared_ptr<class Manager>;
@@ -28,7 +23,7 @@ class Manager {
 
 public:
     Manager(){
-        mDrawSystem = createSystem<DrawSystem>();
+        
     }
     
     ~Manager(){
@@ -88,6 +83,7 @@ public:
 
     void setup(){
 
+        mDrawSystem = DrawSystem::getInstance();
 
         if( needsRefresh == true ){
             refresh();
@@ -98,7 +94,6 @@ public:
         }
         
         update();
-
     }
 
 
@@ -115,6 +110,8 @@ public:
                 sys->update();
             }
         }
+        
+        mDrawSystem->update();
     }
 
     void draw(){
@@ -124,6 +121,8 @@ public:
                 sys->draw();
             }
         }
+        
+        mDrawSystem->draw();
     }
 
 
@@ -133,6 +132,7 @@ public:
             return;
         }
 
+    
         for( std::size_t i = 0; i < mComponents.size(); ++i ){
 
 
@@ -140,16 +140,22 @@ public:
 
             // erase components
             for( auto cIt = componentVector.begin(); cIt != componentVector.end(); ) {
-                if( (*cIt)->getEntity().expired() || ! (*cIt)->getEntity().lock()->isAlive() ){
+                
+                if( (*cIt)->getEntity().expired() || !(*cIt)->getEntity().lock()->isAlive() ){
+                    (*cIt)->onDestroy();
                     cIt = componentVector.erase(cIt);
                 }else{
                     ++cIt;
                 }
             }
-
+            
+            
+            mComponentsByType[i].clear();
+            for(auto cp :  componentVector){
+                mComponentsByType[i].push_back( cp.get() );
+            }
         }
-
-
+        
         for( auto eIt = mEntities.begin(); eIt != mEntities.end();  ){
 
             if( ! (*eIt)->isAlive() || (*eIt == nullptr)  )
@@ -162,13 +168,14 @@ public:
                 ++eIt;
             }
         }
-        
         needsRefresh = false;
     }
 
-    void addComponent( ComponentID id, ComponentRef component){
+    void addComponent( ComponentID id, const ComponentRef component){
         mComponents[id].push_back( component );
+        mComponentsByType[id].push_back( component.get() );
     }
+
 
     template<typename T>
     std::vector<std::weak_ptr<T>> getComponents(){
@@ -201,17 +208,18 @@ public:
         setBitset( bitset, head );
         setBitset( bitset, args ... );
     }
-
+    
     template <class T>
-     const std::vector<ComponentRef>& getComponentsArray() {
-         
-         if( needsRefresh ){
-             refresh();
-         }
-         
+    const std::vector<T*>& getComponentsArray() {
+        
+        if( needsRefresh ){
+            refresh();
+        }
+
         auto _id = getComponentTypeID<T>();
-        return mComponents[_id];
+        return  (std::vector<T*>&) mComponentsByType[_id];
     }
+    
     
     template <class ...Args>
     std::vector<std::shared_ptr<Entity>> getEntitiesWithComponents() const {
@@ -233,7 +241,6 @@ public:
     
     EntityRef copyEntity( const EntityRef& iEntity ){
         
-        
         EntityRef e;
         
         iEntity->mInfo->copy( iEntity, e );
@@ -245,12 +252,12 @@ public:
             if(  e->mComponentBitset[i] == true ){
                 
                 ComponentRef targetComponent;
-                auto sourceComponent = e->mComponentArray[i].lock();
-                
-                sourceComponent->getFactory()->copyComponent( sourceComponent, targetComponent );
+                auto sourceComponent = e->mComponentArray[i];
+
+                sourceComponent->getFactory()->copyComponent( sourceComponent, targetComponent.get() );
                 targetComponent->mEntity = e;
                 mComponents[i].push_back(  targetComponent );
-                e->mComponentArray[i] = mComponents[i].back();
+                e->mComponentArray[i] = mComponents[i].back().get();
             }
         }
         
@@ -261,7 +268,7 @@ public:
     std::vector<EntityRef>& getEntities() {  return mEntities; }
     std::vector<SystemRef>& getSystems() { return mSystems; }
     
-    std::shared_ptr<DrawSystem> getDrawSystem(){
+    DrawSystem* getDrawSystem(){
         return mDrawSystem;
     }
     
@@ -276,16 +283,22 @@ public:
     }
     static std::map< std::string , std::shared_ptr<internal::ComponentFactoryInterface>> typeFactory;
 
+
+    
 protected:
 
     bool needsRefresh{false};
     
     std::array< std::vector<ComponentRef>, MaxComponents> mComponents;
+    //we use this to cast a whole vector at once, only possible with a raw pointer
+    // TODO: make this the main array, not a copy, by using `new` and `delete`
+    std::array< std::vector<Component*>, MaxComponents> mComponentsByType;
     
     std::vector<EntityRef> mEntities;
     std::vector<SystemRef> mSystems;
     
-    std::shared_ptr<DrawSystem> mDrawSystem;
+    
+    DrawSystem* mDrawSystem;
     
     friend class Entity;
 };

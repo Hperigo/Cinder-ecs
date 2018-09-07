@@ -11,11 +11,11 @@ using namespace ecs;
 
 unsigned int Entity::mNumOfEntities = 0;
 
-void Entity::addComponentToManager( ComponentID cId, ComponentRef component){
+void Entity::addComponentToManager( ComponentID cId, const ComponentRef& component){
 
     mManager->addComponent( cId, component );
 
-    mComponentArray[cId] = component;
+    mComponentArray[cId] = component.get();
     mComponentBitset[cId] = true;
 
     component->mEntity = shared_from_this();

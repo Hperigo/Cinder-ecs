@@ -9,4 +9,47 @@
 #include "DrawSystem.h"
 
 
-std::vector<std::shared_ptr<ecs::DrawTarget>> ecs::DrawSystem::mDrawTargets = std::vector<std::shared_ptr<ecs::DrawTarget>>();
+using namespace ecs;
+ecs::DrawSystem* ecs::DrawSystem::mInstance = nullptr;
+
+IDrawable::IDrawable( DrawTarget* iDrawTarget ){
+    
+    
+    iDrawTarget->addDrawable( this );
+}
+
+void IDrawable::setDrawTarget( std::shared_ptr<ecs::DrawTarget> iDrawTarget){
+    
+    if( drawTargetOwner )
+        drawTargetOwner->removeDrawable( _listPosition );
+    
+    
+    if( iDrawTarget ){
+        iDrawTarget->addDrawable(this);
+        
+    }else{ //if draw target is null, remove it from owner
+        
+        
+        if( hasDrawTarget() == false ){
+            return;
+        }
+        
+        // is draw target is null, remove from current target
+        drawTargetOwner->removeDrawable(_listPosition);
+        drawTargetOwner = nullptr;
+    }
+    
+}
+
+IDrawable::IDrawable() {
+    
+    setDrawTarget( DrawSystem::getInstance()->getDefaultDrawTarget() );
+}
+
+
+IDrawable::~IDrawable(){
+    
+    if( hasDrawTarget() ){
+        drawTargetOwner->removeDrawable( _listPosition );
+    }
+}

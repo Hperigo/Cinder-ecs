@@ -17,12 +17,14 @@ struct TransformSystem : ecs::System{
     void update() override{
         
         auto& transforms = getManager()->getComponentsArray<Transform>();
-        for(auto& c : transforms){
-            
-            auto t = static_pointer_cast<Transform>(c);
+        for(auto& t : transforms){
+
             if(t->needsUpdate()){
                t->updateMatrices();
             }
+            
+//            auto t = static_pointer_cast<Transform>(c);
+
         }
     }
     
@@ -33,14 +35,12 @@ struct TransformSystem : ecs::System{
         auto transforms = getManager()->getComponentsArray<Transform>();
 
         
-        for( auto& handle : transforms ){
+        for( auto& trans : transforms ){
 
-            auto trans = static_pointer_cast<Transform>( handle );
-            
             // draw parent child relation
             if( trans->hasParent() ){
                 
-                auto parentHandle = trans->getParent().lock();
+                auto parentHandle = trans->getParent();
                 ci::gl::drawLine(trans->getWorldPos(),  parentHandle->getWorldPos() );
 
             }
@@ -50,13 +50,13 @@ struct TransformSystem : ecs::System{
                 // draw AnchorPoint
                 ci::gl::ScopedModelMatrix m;
                 ci::gl::translate( trans->getWorldPos() );
-                gl::drawSolidRect( { -5,-5, 5,5 }  );
+                ci::gl::drawSolidRect( { -5,-5, 5,5 }  );
             
             }
             
             {
                 ci::gl::ScopedModelMatrix m;
-                ci::gl::multModelMatrix( trans->getWorldCTransform() );
+                ci::gl::multModelMatrix( trans->getWorldTransform() );
                 ci::gl::translate( trans->getAnchorPoint() );
                 const float length = 50;
                 // x axis
@@ -69,7 +69,6 @@ struct TransformSystem : ecs::System{
 
                 ci::gl::color( ci::Color::white());
             }
-//
         }
     }
     

@@ -64,6 +64,7 @@
 		AC63CF7CAC1042C98848291F /* imgui_demo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = imgui_demo.cpp; path = "../../../../Cinder-ImGui/lib/imgui/imgui_demo.cpp"; sourceTree = "<group>"; };
 		B643482179464B4D87803E0C /* Manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Manager.h; path = ../../../src/ecs/Manager.h; sourceTree = "<group>"; };
 		BE67FC0921014EAA00F7FA74 /* Particles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Particles.h; path = ../include/Particles.h; sourceTree = "<group>"; };
+		BED81BBA2136D37B00AB20C4 /* DrawTargets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DrawTargets.h; path = ../include/DrawTargets.h; sourceTree = "<group>"; };
 		C29D9512034A4D988B72065D /* CinderImGui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CinderImGui.h; path = "../../../../Cinder-ImGui/include/CinderImGui.h"; sourceTree = "<group>"; };
 		C39CF2A6E631486DAAE379BD /* UpdateDrawables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UpdateDrawables.h; path = ../../../src/Utils/UpdateDrawables.h; sourceTree = "<group>"; };
 		C864794F865B46348129C957 /* imgui_user.inl */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; name = imgui_user.inl; path = "../../../../Cinder-ImGui/include/imgui_user.inl"; sourceTree = "<group>"; };
@@ -113,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				006898B732B24219BC790AFA /* EcsRenderingApp.cpp */,
+				BED81BBA2136D37B00AB20C4 /* DrawTargets.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";

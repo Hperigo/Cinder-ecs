@@ -13,7 +13,7 @@
 
 
 #include "cinder/Json.h"
-#include "cinder/App/AppBase.h"
+#include "cinder/app/AppBase.h"
 
 namespace ecs {
     namespace factory{
@@ -38,18 +38,18 @@ namespace ecs {
         
         
         inline void saveComponents( ci::JsonTree* json, ecs::EntityRef entity  ){
-        
-            for( auto& component : entity->getComponents() ){
-                component.lock()->getFactory()->save( json );
+            auto components = entity->getComponents();
+            for( auto& component : components  ){
+                component->getFactory()->save( json );
             }
-            
+
         }
         inline void saveTree( ci::JsonTree* json, ecs::EntityRef entity, unsigned int depth = 0){
             
             
             auto entityJson = ci::JsonTree::makeObject( std::to_string( entity->getId()) );
             
-            auto transformHandle =  entity->getComponent<Transform>().lock();
+            auto transformHandle =  entity->getComponent<Transform>();
             
             
             auto children =  transformHandle->getChildren();
@@ -57,7 +57,7 @@ namespace ecs {
             saveComponents(&entityJson, entity);
 
             if( transformHandle->hasParent() ){
-                auto parentJson = ci::JsonTree("parent_id",  transformHandle->getParent().lock()->getEntity().lock()->getId() );
+                auto parentJson = ci::JsonTree("parent_id",  transformHandle->getParent()->getEntity().lock()->getId() );
                 entityJson.addChild( parentJson );
             }
 
@@ -65,7 +65,7 @@ namespace ecs {
             
             for( auto& child : children ){
     
-                saveTree( json, child.lock()->getEntity().lock()  );
+                saveTree( json, child->getEntity().lock()  );
             }
         }
         
@@ -126,12 +126,12 @@ namespace ecs {
                 try{
                     parent = entityMap.at( entityInfo.parentId ).entity;
                 }catch(std::exception &e){
-                    console() << e.what() << endl;
+                    ci::app::console() << e.what() << std::endl;
                 }
                 
                 
                 if(  parent != nullptr ){
-                    auto transformHandle = entityInfo.entity->getComponent<Transform>().lock();
+                    auto transformHandle = entityInfo.entity->getComponent<Transform>();
                     transformHandle->setParent( parent->getComponent<Transform>(), false  );
                 }
                 

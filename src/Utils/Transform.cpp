@@ -19,6 +19,9 @@ size_t Transform::transformId = 0;
 Transform::Transform(){
     mId = transformId;
     transformId++;
+    
+    
+    onUpdateSignal = std::make_shared<ci::signals::Signal<void(const Transform*)>>();
 }
 
 Transform::Transform( const vec3& pos_ ) : localPos(pos_){
@@ -53,29 +56,31 @@ Transform::~Transform(){
 
 void Transform::updateMatrices(bool emitSignal){
     
+    // TODO: Cache the matrices transformss
+    
     ci::mat4 transform;
-    transform *= glm::translate( localPos + anchorPoint);
-    transform *= glm::toMat4( mRotation ); //glm::rotate(localRotation, vec3(0,0,1));
-    transform *= glm::scale( localScale );
-    transform *= glm::translate( -anchorPoint );
+    transform *= glm::translate<float>( localPos + anchorPoint);
+    transform *= glm::toMat4<float>( mRotation ); //glm::rotate(localRotation, vec3(0,0,1));
+    transform *= glm::scale<float>( localScale );
+    transform *= glm::translate<float>( -anchorPoint );
     
     mCTransform = transform;
-    if(auto p = parent.lock())
+    
+    if(parent)
     {
-        mWorldCTransform = p->getWorldCTransform() * mCTransform;
+        mWorldTransform = parent->getWorldTransform() * mCTransform;
     }else{
-        mWorldCTransform = mCTransform;
+        mWorldTransform = mCTransform;
     }
     
-    if( emitSignal ){
-        auto thisHandle = CTransformHandle(shared_from_this());
-        onUpdateSignal.emit( thisHandle );
+    if( onUpdateSignal && onUpdateSignal->getNumSlots() != 0){
+        onUpdateSignal->emit( this );
     }
     
     mNeedsUpdate = false;
 
     for(auto& c : children){
-        c.lock()->updateMatrices();
+        c->updateMatrices();
     }
 
 }
@@ -85,11 +90,14 @@ void Transform::updateMatrices(bool emitSignal){
 void Transform::setCTransform(const mat4 &transform){
     
     mCTransform = transform;
-    if(auto p = parent.lock())
+    if(parent)
     {
-        mWorldCTransform = p->getWorldCTransform() * mCTransform;
+        
+        mWorldTransform = parent->getWorldTransform() * mCTransform;
+        
     }else{
-        mWorldCTransform = mCTransform;
+        
+        mWorldTransform = mCTransform;
     }
 
     mNeedsUpdate = true;
@@ -104,16 +112,16 @@ vec3 Transform::getWorldPos() {
         updateMatrices(false);
     }
 
-    vec4 p = mWorldCTransform * vec4(anchorPoint, 1);
+    vec4 p = mWorldTransform * vec4(anchorPoint, 1);
     return vec3(p.x, p.y, p.z);
 }
 
 
 void Transform::setWorldPos(const vec3& pos){
     
-    if(auto p = parent.lock())
+    if(parent)
     {
-        auto newP = glm::inverse(p->getWorldCTransform()) * glm::vec4(pos, 1);
+        auto newP = glm::inverse(parent->getWorldTransform()) * glm::vec4(pos, 1);
         localPos = newP;
     }else{
         localPos = pos;
@@ -128,9 +136,9 @@ void Transform::setWorldPos(const vec3& pos){
 
 void Transform::setWorldScale(const vec3& scale){
     
-    if(auto p = parent.lock())
+    if(parent)
     {
-        vec3 invScale = (1.0f /  p->getWorldScale() );
+        vec3 invScale = (1.0f /  parent->getWorldScale() );
         localScale =  localScale *  invScale;
     }
     else
@@ -147,8 +155,9 @@ vec3 Transform::getWorldScale() {
         updateMatrices(false);
     }
     
-    if(auto p = parent.lock()){
-        return p->getWorldScale() * localScale;
+    if(parent)
+    {
+        return parent->getWorldScale() * localScale;
     }else{
         return localScale;
     }
@@ -159,9 +168,10 @@ void Transform::setWorldRotation( float radians ){
     
     auto q = glm::angleAxis( radians, ci::vec3( 0, 0, 1 ) );
     
-    if(auto p = parent.lock()){
-        
-        auto invParent = glm::inverse( p->getWorldRotation() );
+    if(parent)
+    {
+   
+        auto invParent = glm::inverse( parent->getWorldRotation() );
         mRotation = q * invParent;
         
     }else{
@@ -173,8 +183,9 @@ void Transform::setWorldRotation( float radians ){
 
 void Transform::setWorldRotation(const glm::quat& q ){
     
-    if(auto p = parent.lock()){
-        auto invParent = glm::inverse( p->getWorldRotation() );
+    if(parent)
+    {
+        auto invParent = glm::inverse( parent->getWorldRotation() );
         mRotation = q * invParent;
         
     }else{
@@ -191,21 +202,23 @@ glm::quat Transform::getWorldRotation() {
     }
 
     
-    if(auto p = parent.lock()){
-        return mRotation * p->getWorldRotation();
+    if(parent)
+    {
+        return mRotation * parent->getWorldRotation();
     }else{
         return mRotation;
     }
 }
 
-void Transform::setParent( CTransformHandle _parent, bool keepWorldCTransform){
+void Transform::setParent( Transform* _parent, bool keepWorldCTransform)
+{
     
-    if( _parent.lock()->getId() == mId){
+    if( _parent->getId() == mId){
         return;
     }
     
     parent = _parent;
-    parent.lock()->addChildToList( CTransformHandle( shared_from_this() )  );
+    parent->addChildToList( this );
     
     if( keepWorldCTransform ){
         setWorldPos( localPos );
@@ -220,14 +233,14 @@ void Transform::setParent( CTransformHandle _parent, bool keepWorldCTransform){
 void Transform::removeParent(bool keepWordCTransform, bool removeFromList){
 
     if( removeFromList ){
-        parent.lock()->removeChildFromList( shared_from_this() );
+        parent->removeChildFromList( this );
     }
-    
-    auto p = parent.lock();
+    //TODO clenup
+    auto p = parent;
     
     if(p && keepWordCTransform){
         
-        auto newPos =  mWorldCTransform * vec4(0,0, 0, 1);
+        auto newPos =  mWorldTransform * vec4(0,0, 0, 1);
         localPos = vec3( newPos.x, newPos.y, newPos.z );
         
         auto newScale =  localScale * p->getWorldScale();
@@ -235,31 +248,27 @@ void Transform::removeParent(bool keepWordCTransform, bool removeFromList){
         
         mRotation = mRotation * p->getWorldRotation();
         
-        parent = CTransformHandle();
+        parent = nullptr;
     }
     
-    parent = CTransformHandle();
+    parent = nullptr;
 
     mNeedsUpdate = true;
 }
 
-CTransformHandle Transform::findChild( CTransformHandle child ){
+Transform* Transform::findChild(const Transform* child ){
     
     
-    if( child.lock() == nullptr ){
-        return CTransformHandle();
+    if( child == nullptr ){
+        return nullptr;
     }
     
-    auto iter = std::find_if(children.begin(), children.end(), [child](const CTransformHandle & handle) -> bool {
-        
-        auto ptr = handle.lock();
-        
-        return (ptr != nullptr) && (ptr == child.lock());
-        
+    auto iter = std::find_if(children.begin(), children.end(), [child](const Transform* handle) -> bool {
+        return (handle != nullptr) && (handle == child);
     });
     
     if( iter == children.end() ){
-        return CTransformHandle();
+        return nullptr;
     }
     
     return *iter;
@@ -267,13 +276,15 @@ CTransformHandle Transform::findChild( CTransformHandle child ){
 
 
 
-bool Transform::addChild(CTransformHandle transform){
+bool Transform::addChild(Transform* transform){
 
-    bool alreadyInTree = transform.lock()->hasChild( shared_from_this() ) || hasChild(transform);
+    bool alreadyInTree = transform->hasChild( this ) || hasChild(transform);
     
     if ( !alreadyInTree ){
-        transform.lock()->setParent( shared_from_this() );
-        transform.lock()->mNeedsUpdate = true;
+        
+        transform->setParent( this );
+        transform->mNeedsUpdate = true;
+        
         return true;
     }else{
         return false;
@@ -281,12 +292,12 @@ bool Transform::addChild(CTransformHandle transform){
 }
 
 
-bool Transform::removeChild( CTransformHandle transform ){
+bool Transform::removeChild( Transform* transform ){
     
-    auto findIt = findChild(transform);
+    auto found = findChild(transform);
     
-    if ( findIt.lock() ){
-        transform.lock()->removeParent();
+    if ( found ){
+        transform->removeParent();
         return true;
     }else{
         return false;
@@ -294,18 +305,18 @@ bool Transform::removeChild( CTransformHandle transform ){
 }
 
 
-bool Transform::hasChild(const CTransformHandle  child, bool recursive ){
+bool Transform::hasChild(const Transform* child, bool recursive ){
     
-    auto findIt = findChild(child);
+    auto found = findChild(child);
     
-    if( findIt.lock() ){
+    if( found ){
         return true;
     }
     
     if( recursive  ){
         for( auto& c : children  ){
             
-            if(  c.lock()->hasChild( shared_from_this() ) ){
+            if(  c->hasChild( this ) ){
                 return true;
             }
         }
@@ -315,14 +326,14 @@ bool Transform::hasChild(const CTransformHandle  child, bool recursive ){
 }
 
 
-bool Transform::removeChildFromList( CTransformHandle child){
+bool Transform::removeChildFromList( Transform* child){
     
     auto findIt = findChild(child);
     
-    if( findIt.lock() ){
+    if( findIt ){
         
-        auto rmFn = [child](const CTransformHandle& t ) -> bool{
-            return child.lock() == t.lock();
+        auto rmFn = [child](const Transform* t ) -> bool{
+            return child == t;
         };
         
         children.erase(  std::remove_if( children.begin(), children.end(), rmFn ), children.end() );
@@ -332,11 +343,11 @@ bool Transform::removeChildFromList( CTransformHandle child){
     return false;
 }
 
-bool Transform::addChildToList( CTransformHandle child){
+bool Transform::addChildToList( Transform* child){
     
     auto findIt = findChild( child );
     
-    if( ! findIt.lock() ){
+    if( ! findIt ){
         children.push_back(child);
         return true;
     }
@@ -344,41 +355,39 @@ bool Transform::addChildToList( CTransformHandle child){
     return false;
 }
 
-CTransformHandle Transform::getRoot(){
+Transform* Transform::getRoot(){
     
-    CTransformHandle current = CTransformHandle( shared_from_this() ) ;
-    while( current.lock()->hasParent()  ){
-        current = current.lock()->getParent();
+    Transform* current = this ;
+    while( current->hasParent()  ){
+        current = current->getParent();
     }
     
     return current;
 }
 
 
-void Transform::descendTree(const std::function<void (CTransformHandle &, CTransformHandle &)> &fn){
+void Transform::descendTree(const std::function<void (Transform* &, Transform* &)> &fn){
     
     for( auto &c : children ) {
-        auto thisHandle = CTransformHandle(shared_from_this());
+        auto thisHandle = this;
         fn(thisHandle,  c);
-        c.lock()->descendTree(fn);
+        c->descendTree(fn);
     }
     
 }
 
-ecs::EntityRef ImGui::DrawTree( std::shared_ptr<Transform> &iTransform){
+ecs::EntityRef ImGui::DrawTree(const Transform* iTransform){
     
-        
     static int selection_mask = (1 << 0);
     int node_clicked = -1;
     
     ecs::EntityRef selectedEntity = nullptr;
     
     
-    std::function<void(std::shared_ptr<Transform>&)> drawChildren = [&]( std::shared_ptr<Transform>& root ){
+    std::function<void(const Transform*)> drawChildren = [&](const Transform* root ){
         
-//        if( root == nullptr ){
-//            return;
-//        }
+        
+        ui::PushID("id");
         
         auto rootId = root->getEntity().lock()->getId();
         auto id_text = "e id: " + std::to_string( rootId );
@@ -403,7 +412,7 @@ ecs::EntityRef ImGui::DrawTree( std::shared_ptr<Transform> &iTransform){
             
             if( nodeOpen ){
                 for( auto &child : root->getChildren() ) {
-                    auto ptr = child.lock();
+                    auto ptr = child;
                     drawChildren( ptr );
                 }
                 ImGui::TreePop();
@@ -416,6 +425,9 @@ ecs::EntityRef ImGui::DrawTree( std::shared_ptr<Transform> &iTransform){
                 node_clicked = rootId;
             }
         }
+        
+        
+        ui::PopID();
     }; // end of lambda
     
 
