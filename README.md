@@ -18,7 +18,7 @@ You can create an entity with the ecs::Manager.
 
 ```
 struct ColorComponent : public ecs::Component{
-Color mColor;
+  Color mColor;
 };
 ```
 
@@ -61,19 +61,16 @@ And a scene entity it self would be an object that is used once and has lot's of
 ```
 struct Scene : public ecs::Entity{
 
-setup() override {
+  setup() override {
+    add components… transform, etc… 
+  }
 
-add components… transform, etc… 
+  animateIn(){
+  }
 
-addComponent<Updatable<Scene>>(this);
-addComponent<Drawable<Scene>>(this);
-}
-
-animateIn(){
-}
-
-animateOut(){
-}
+  animateOut(){
+  }
+  
 }
 
 shared_ptr<Scene> scene = mManager.createEntity<Scene>();
@@ -86,12 +83,12 @@ System are the only objects that get update and draw called every frame. They ar
 ```
 Struct ParticleSystem : ecs::System{
 
-void update() override{
+  void update() override{
 
-}
-void draw() override{
+  }
+  void draw() override{
 
-}
+  }
 }
 ```
 
