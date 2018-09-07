@@ -1,7 +1,7 @@
 *.DS_Store
 *.o
-./samples/EcsSerialization/xcode/build*
-./samples/EcsRendering/xcode/build*
-./samples/EcsInteraction/xcode/build*ls
+./samples/EcsSerialization/xcode/build/*
+./samples/EcsRendering/xcode/build/*
+./samples/EcsInteraction/xcode/build/*
 
 
