@@ -23,7 +23,7 @@ class Manager {
 
 public:
     Manager(){
-        mDrawSystem = createSystem<DrawSystem>();
+        
     }
     
     ~Manager(){
@@ -83,6 +83,7 @@ public:
 
     void setup(){
 
+        mDrawSystem = DrawSystem::getInstance();
 
         if( needsRefresh == true ){
             refresh();
@@ -93,7 +94,6 @@ public:
         }
         
         update();
-
     }
 
 
@@ -110,6 +110,8 @@ public:
                 sys->update();
             }
         }
+        
+        mDrawSystem->update();
     }
 
     void draw(){
@@ -119,6 +121,8 @@ public:
                 sys->draw();
             }
         }
+        
+        mDrawSystem->draw();
     }
 
 
@@ -264,7 +268,7 @@ public:
     std::vector<EntityRef>& getEntities() {  return mEntities; }
     std::vector<SystemRef>& getSystems() { return mSystems; }
     
-    std::shared_ptr<DrawSystem> getDrawSystem(){
+    DrawSystem* getDrawSystem(){
         return mDrawSystem;
     }
     
@@ -293,7 +297,8 @@ protected:
     std::vector<EntityRef> mEntities;
     std::vector<SystemRef> mSystems;
     
-    std::shared_ptr<DrawSystem> mDrawSystem;
+    
+    DrawSystem* mDrawSystem;
     
     friend class Entity;
 };
