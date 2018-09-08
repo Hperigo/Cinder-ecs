@@ -49,88 +49,87 @@ namespace ecs{
             return mComponentBitset[ getComponentTypeID<T>() ];
         }
 
-        template<typename T>
+        
+        template <class T,
+        typename std::enable_if< !std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
         T* addComponent() {
+            std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T() ) );
             
-            //@Todo: Move constexpr to something c++14
-            if constexpr ( std::is_base_of<Component, T>::value == false ){
-                
-                std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T() ) );
-                
-                auto cId = getComponentTypeID<WrapperComponent<T>>();
-                
-                auto rawHelper = std::make_shared< ComponentFactoryTemplate< WrapperComponent<T> > >();
-                
-                rawHelper->owner = rawComponent.get();
-                rawComponent->mFactory = rawHelper;
-
-                addComponentToManager(cId, rawComponent);
-                return getComponent< T >();
-
-            }else{
-                
-                std::shared_ptr<T> rawComponent( new T() );
-                
-                auto cId = getComponentTypeID<T>();
-                
-                auto rawHelper = std::make_shared< ComponentFactoryTemplate<T> >();
-                rawHelper->owner = rawComponent.get();
-                rawComponent->mFactory = rawHelper;
-                
-                addComponentToManager(cId, rawComponent);
-                
-                return  rawComponent.get();
-            }
+            auto cId = getComponentTypeID<WrapperComponent<T>>();
+            
+            auto rawHelper = std::make_shared< ComponentFactoryTemplate< WrapperComponent<T> > >();
+            
+            rawHelper->owner = rawComponent.get();
+            rawComponent->mFactory = rawHelper;
+            
+            addComponentToManager(cId, rawComponent);
+            return getComponent< T >();
+            
+        }
+        
+        template <class T,
+        typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+        T* addComponent() {
+        
+            
+            std::shared_ptr<T> rawComponent( new T() );
+            
+            auto cId = getComponentTypeID<T>();
+            
+            auto rawHelper = std::make_shared< ComponentFactoryTemplate<T> >();
+            rawHelper->owner = rawComponent.get();
+            rawComponent->mFactory = rawHelper;
+            
+            addComponentToManager(cId, rawComponent);
+            
+            return  rawComponent.get();
+            
         }
         
         
-        template<typename T, typename... TArgs>
+        template <class T, typename... TArgs,
+        typename std::enable_if< ! std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
         T* addComponent(TArgs&&... _Args) {
-
-            //@Todo: Move constexpr to something c++14
-            if constexpr ( std::is_base_of<Component, T>::value == false ){
-                
-                std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T(std::forward<TArgs>(_Args)... )) );
-                
-                auto cId = getComponentTypeID<WrapperComponent<T>>();
-                
-                auto rawHelper = std::make_shared< ComponentFactoryTemplate< WrapperComponent<T> > >();
-                rawHelper->owner = rawComponent.get();
-                rawComponent->mFactory = rawHelper;
-                
-                addComponentToManager(cId, rawComponent);
-                
-                return  &rawComponent->object;
-                
-            }else{
-        
-                std::shared_ptr<T> rawComponent( new T(std::forward<TArgs>(_Args)... ));
-
-                auto cId = getComponentTypeID<T>();
-
-                auto rawHelper = std::make_shared< ComponentFactoryTemplate<T> >();
-                rawHelper->owner = rawComponent.get();
-                rawComponent->mFactory = rawHelper;
-                
-                addComponentToManager(cId, rawComponent);
-                
-                return  rawComponent.get();
-            }
+            
+            std::shared_ptr<WrapperComponent<T>> rawComponent( new WrapperComponent<T>( T(std::forward<TArgs>(_Args)... )) );
+            auto cId = getComponentTypeID<WrapperComponent<T>>();
+            auto rawHelper = std::make_shared< ComponentFactoryTemplate< WrapperComponent<T> > >();
+            rawHelper->owner = rawComponent.get();
+            rawComponent->mFactory = rawHelper;
+            
+            addComponentToManager(cId, rawComponent);
+            
+            return  &rawComponent->object;
         }
         
-        void addComponent( ComponentRef& rawComponent ){
-        
-            addComponentToManager(rawComponent->getFactory()->_id, rawComponent);
+        template <class T, typename... TArgs,
+        typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+        T* addComponent(TArgs&&... _Args) {
+            
+            std::shared_ptr<T> rawComponent( new T(std::forward<TArgs>(_Args)... ));
+            
+            auto cId = getComponentTypeID<T>();
+            
+            auto rawHelper = std::make_shared< ComponentFactoryTemplate<T> >();
+            rawHelper->owner = rawComponent.get();
+            rawComponent->mFactory = rawHelper;
+            
+            addComponentToManager(cId, rawComponent);
+            
+            return  rawComponent.get();
             
         }
+     
+        void addComponent( ComponentRef& rawComponent ){
+            addComponentToManager(rawComponent->getFactory()->_id, rawComponent);
+        }
         
-
-
         template<typename T>
         void removeComponent(){
-            
+
             ComponentID componentTypeID;
-            componentTypeID = getComponentTypeID<T>();
+
+            componentTypeID = getComponentTypeID<T>();  // we dont need a specialized function for wrapper components because getComponentTypeID already does that
     
             mComponentBitset.set(componentTypeID, 0);
             mComponentArray [ componentTypeID ]->mEntity = std::weak_ptr<Entity>();/**/
@@ -139,28 +138,28 @@ namespace ecs{
             markRefresh();
         }
 
-        template<typename T>
-        T* getComponent() {
+        
+        template <class T,
+        typename std::enable_if< !std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+        T* getComponent(){
             
-            if constexpr ( std::is_base_of<Component, T>::value == false ){
-
-                assert(hasComponent< WrapperComponent<T> >());
-                
-                Component* comp = mComponentArray[getComponentTypeID< WrapperComponent<T> >()];
-                WrapperComponent<T>* wrapper = static_cast< WrapperComponent<T>* >(  comp );
-                
-                return & (wrapper->object);
-
-            }else{
-                
-                
-                assert(hasComponent<T>());
-                return (T*)mComponentArray[getComponentTypeID<T>()];
-            }
-
+            assert(hasComponent< WrapperComponent<T> >());
+            Component* comp = mComponentArray[getComponentTypeID< WrapperComponent<T> >()];
+            WrapperComponent<T>* wrapper = static_cast< WrapperComponent<T>* >(  comp );
+            
+            return & (wrapper->object);
         }
-
-
+        
+        
+        template <class T,
+        typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+        T* getComponent(){
+            
+            assert(hasComponent<T>());
+            return (T*)mComponentArray[getComponentTypeID<T>()];
+            
+        }
+        
         inline std::bitset<MaxComponents> getComponentBitset(){ return mComponentBitset; }
         std::shared_ptr<internal::EntityInfoBase> mInfo;
         

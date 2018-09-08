@@ -17,6 +17,23 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+template <class T,
+typename std::enable_if< !std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+int Whatever(){
+    
+    return 0;
+}
+
+
+template <class T,
+typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+int Whatever(){
+    return 1;
+}
+
+
+    
+
 
 // Some basic components
 
@@ -203,6 +220,10 @@ void EcsRenderingApp::setup()
     ui::initialize();
     
     console() << "initialized!" << "💊" << std::endl;
+    
+    
+    console() << "is" << Whatever<Transform>() << endl;
+    console() << "is not" << Whatever<Color>() << endl;
     
     mManager.setup();
 }

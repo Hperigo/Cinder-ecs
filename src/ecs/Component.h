@@ -53,10 +53,6 @@ namespace ecs{
             
         }
     }
-    
-
-
-
 
     struct Component {
 
@@ -101,16 +97,28 @@ namespace ecs{
     };
     
     
-    template <typename T>
-    inline ComponentID getComponentTypeID() noexcept {
-        
-        if constexpr ( std::is_base_of<Component, T>::value == true ){
-            return internal::getComponentTypeID<T>();
-        }else{
-            return internal::getComponentTypeID< WrapperComponent<T> >();
-        }
+    template <class T,
+    typename std::enable_if< !std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+    inline ComponentID getComponentTypeID(){
+        return internal::getComponentTypeID< WrapperComponent<T> >();
     }
     
+    template <class T,
+    typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
+    inline ComponentID getComponentTypeID(){
+            return internal::getComponentTypeID<T>();
+    }
+    
+    
+//    template <typename T>
+//    inline ComponentID getComponentTypeID() noexcept {
+//
+//        if constexpr ( std::is_base_of<Component, T>::value == true ){
+//            return internal::getComponentTypeID<T>();
+//        }else{
+//        }
+//    }
+//
     
     template<class T>
     struct ComponentFactory :  public internal::ComponentFactoryInterface{
