@@ -5,7 +5,7 @@
 #ifndef LEKSAPP_UTILS_H
 #define LEKSAPP_UTILS_H
 
-#include "Component.h"
+#include "ecs/Component.h"
 
 #include <list>
 

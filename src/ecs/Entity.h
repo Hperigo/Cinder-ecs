@@ -8,6 +8,7 @@
 
 #include <bitset>
 #include <array>
+#include <vector>
 #include "Component.h"
 
 namespace ecs{

@@ -17,26 +17,8 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-template <class T,
-typename std::enable_if< !std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
-int Whatever(){
-    
-    return 0;
-}
-
-
-template <class T,
-typename std::enable_if< std::is_base_of<ecs::Component, T>::value, T>::type* = nullptr>
-int Whatever(){
-    return 1;
-}
-
-
-    
-
 
 // Some basic components
-
 struct  ColorComponent{
     ci::Color _color;
 };
@@ -114,8 +96,12 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
 class MyCustomEntity : public ecs::Entity, public  ecs::IDrawable {
     
 public:
-    MyCustomEntity( float radius ) : mRadius( radius ){   }
+    MyCustomEntity( float radius ) : mRadius( radius ), ecs::IDrawable() {   }
     
+	~MyCustomEntity()
+	{
+		
+	}
     
     void setup() override {
         
@@ -221,9 +207,6 @@ void EcsRenderingApp::setup()
     
     console() << "initialized!" << "💊" << std::endl;
     
-    
-    console() << "is" << Whatever<Transform>() << endl;
-    console() << "is not" << Whatever<Color>() << endl;
     
     mManager.setup();
 }

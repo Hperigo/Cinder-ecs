@@ -13,6 +13,7 @@
     <ProjectGuid>{C16A95B8-EA02-4EFC-8149-FD8B43B6087D}</ProjectGuid>
     <RootNamespace>EcsRendering</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -25,7 +26,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -116,9 +117,10 @@
     <ClCompile Include="..\..\..\src\ecs\Entity.cpp" />
     <ClCompile Include="..\..\..\src\ecs\System.cpp" />
     <ClCompile Include="..\..\..\src\Utils\Transform.cpp" />
-    <ClCompile Include="..\..\..\src\Utils\UpdateDrawables.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\DrawTargets.h" />
+    <ClInclude Include="..\include\Particles.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\..\Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\..\Cinder-ImGui\include\imgui_user.h" />
@@ -132,7 +134,6 @@
     <ClInclude Include="..\..\..\src\ecs\System.h" />
     <ClInclude Include="..\..\..\src\Utils\Transform.h" />
     <ClInclude Include="..\..\..\src\Utils\TransformSystem.h" />
-    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h" />
     <ClInclude Include="..\..\..\src\Utils\Factory.h" />
     <ClInclude Include="..\..\..\src\Utils\DrawSystem.h" />
     <ClInclude Include="..\..\..\src\Utils\DrawSystem.cpp" />

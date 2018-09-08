@@ -22,9 +22,6 @@ struct TransformSystem : ecs::System{
             if(t->needsUpdate()){
                t->updateMatrices();
             }
-            
-//            auto t = static_pointer_cast<Transform>(c);
-
         }
     }
     

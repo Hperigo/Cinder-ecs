@@ -12,6 +12,21 @@
 using namespace ecs;
 ecs::DrawSystem* ecs::DrawSystem::mInstance = nullptr;
 
+DrawSystem* ecs::DrawSystem::getInstance() {
+	if (mInstance == nullptr) {
+		static DrawSystem mS;
+		mInstance = &mS;
+	}
+
+	return mInstance;
+}
+
+
+IDrawable::IDrawable() {
+
+	setDrawTarget(DrawSystem::getInstance()->getDefaultDrawTarget());
+}
+
 IDrawable::IDrawable( DrawTarget* iDrawTarget ){
     
     
@@ -41,10 +56,7 @@ void IDrawable::setDrawTarget( std::shared_ptr<ecs::DrawTarget> iDrawTarget){
     
 }
 
-IDrawable::IDrawable() {
-    
-    setDrawTarget( DrawSystem::getInstance()->getDefaultDrawTarget() );
-}
+
 
 
 IDrawable::~IDrawable(){

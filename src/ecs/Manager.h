@@ -23,7 +23,8 @@ class Manager {
 
 public:
     Manager(){
-        
+		mDrawSystem = DrawSystem::getInstance();
+
     }
     
     ~Manager(){
@@ -83,7 +84,6 @@ public:
 
     void setup(){
 
-        mDrawSystem = DrawSystem::getInstance();
 
         if( needsRefresh == true ){
             refresh();

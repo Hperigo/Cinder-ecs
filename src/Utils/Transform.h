@@ -9,7 +9,7 @@
 #ifndef CCTransform_h
 #define CCTransform_h
 
-#include "Component.h"
+#include "ecs/Component.h"
 #include "ecs/System.h"
 #include "cinder/Vector.h"
 
@@ -94,7 +94,7 @@ public:
     // Rotation --------------------------------
     
     void setWorldRotation( float radians );
-    void setWorldRotation(const ci::quat& q );
+    void setWorldRotation(const glm::quat& q );
     
 
     void setRotation( float radians ){

@@ -81,7 +81,8 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
     void draw() override{
         
         auto entity = getEntity().lock();
-        
+		if (!entity) return;
+
         gl::ScopedModelMatrix m;
         
         auto c = entity->getComponent<Transform>();
@@ -146,7 +147,7 @@ class EcsSerializationApp : public App {
     std::shared_ptr<TransformSystem> tsys;
     
     
-    std::shared_ptr<ecs::DrawSystem> mDrawSystem;
+    ecs::DrawSystem* mDrawSystem;
         
 };
 

@@ -101,25 +101,37 @@
     <ClCompile Include="..\..\..\src\ecs\System.cpp">
       <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\Utils\Transform.h">
+    <ClCompile Include="..\..\..\src\Utils\DrawSystem.cpp">
       <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\Utils\Transform.cpp">
       <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\..\src\Utils\TransformSystem.h">
+    <ClCompile Include="..\..\..\src\Utils\UpdateDrawables.cpp">
       <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h">
-      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\src\Utils\TransUpdateDrawablesform.cpp">
-      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>Blocks\Cinder - ecs\src\ecs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\DrawSystem.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\Factory.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\Transform.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\TransformSystem.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h">
+      <Filter>Blocks\Cinder - ecs\src\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
