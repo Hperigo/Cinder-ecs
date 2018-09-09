@@ -26,6 +26,7 @@ namespace ecs{
     
     namespace internal{
 
+        //@TODO: maybe move this to std:: typeinfo?
         static ComponentID lastID{0};
         inline ComponentID getUniqueComponentID() noexcept {
             return lastID++;
@@ -82,17 +83,15 @@ namespace ecs{
     };
     
 
+    // object used to wrap other classes outside ecs ( vec2, color, etc.. )
     template<typename T>
     struct WrapperComponent : public Component{
-        
         WrapperComponent(){
             object = T();
         }
-        
         WrapperComponent(const T& input ) : object(input) {
             object = input;
         }
-        
         T object;
     };
     
@@ -109,17 +108,6 @@ namespace ecs{
             return internal::getComponentTypeID<T>();
     }
     
-    
-//    template <typename T>
-//    inline ComponentID getComponentTypeID() noexcept {
-//
-//        if constexpr ( std::is_base_of<Component, T>::value == true ){
-//            return internal::getComponentTypeID<T>();
-//        }else{
-//        }
-//    }
-//
-    
     template<class T>
     struct ComponentFactory :  public internal::ComponentFactoryInterface{
         
@@ -127,9 +115,9 @@ namespace ecs{
                 owner = &object;
                 _id = getComponentTypeID<T>();
             }
-            
+        
+        // @TODO: why not using target?
         void copyComponent(const Component* source, Component* target) override{
-            T object = *((T*)source);
             T* sourceObj = (T*)source;
             *sourceObj = *((T*)source);
         }

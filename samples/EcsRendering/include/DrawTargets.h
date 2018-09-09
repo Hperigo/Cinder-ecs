@@ -69,6 +69,7 @@ public:
         mTargetScale = targetScale;
         
         
+        // vert shader
         std::string vertShader = R"(#version 150
         uniform mat4 ciModelViewProjection;
         in vec4 ciPosition;
@@ -80,8 +81,10 @@ public:
             gl_Position = ciModelViewProjection * ciPosition;
         })"; // end of vert shader
         
+        
+        // frag shader
         std::string fragShader = R"(
-#version 150
+        #version 150
         
         uniform sampler2D    tex0;
         uniform vec2        sample_offset;

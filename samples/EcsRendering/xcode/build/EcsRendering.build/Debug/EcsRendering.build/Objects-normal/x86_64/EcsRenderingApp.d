@@ -627,9 +627,8 @@ dependencies: \
   ../../../src/Utils/Factory.h ../../../src/ecs/Manager.h \
   ../../../src/ecs/Entity.h ../../../src/ecs/Component.h \
   ../../../src/ecs/System.h ../../../src/Utils/DrawSystem.h \
-  ../../../src/Utils/UpdateDrawables.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Component.h \
-  ../../../src/Utils/Transform.h ../../../../../include/cinder/Json.h \
+  ../../../src/Utils/UpdateDrawables.h ../../../src/Utils/Transform.h \
+  ../../../../../include/cinder/Json.h \
   ../../../../../include/cinder/Utilities.h \
   ../../../../../include/boost/container/list.hpp \
   ../../../../../include/boost/container/detail/config_begin.hpp \

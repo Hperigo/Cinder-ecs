@@ -106,8 +106,6 @@ public:
     void setup() override {
         
         App::get()->getSignalUpdate().connect( std::bind( &MyCustomEntity::customUpdateCall, this) );
-//        setDrawTarget( ecs::DrawSystem::getInstance()->getDefaultDrawTarget() );
-        
         addComponent<Transform>();
     }
     
@@ -249,9 +247,9 @@ void EcsRenderingApp::draw()
     mManager.draw();
 
     {
-        gl::color(ColorA(1.0f,1.0f,1.0f, 1.0f));
-        gl::drawString( "Raw texture fetched from FBO draw target", vec2(10,10) );
-        gl::draw( mBlurDrawTarget->getBluredFbo()->getColorTexture(), ci::Rectf( 0,0, mBlurDrawTarget->getInputSize().x, mBlurDrawTarget->getInputSize().y ) );
+//        gl::color(ColorA(1.0f,1.0f,1.0f, 1.0f));
+//        gl::drawString( "Raw texture fetched from FBO draw target", vec2(10,10) );
+//        gl::draw( mBlurDrawTarget->getBluredFbo()->getColorTexture(), ci::Rectf( 0,0, mBlurDrawTarget->getInputSize().x, mBlurDrawTarget->getInputSize().y ) );
     }
 }
 
