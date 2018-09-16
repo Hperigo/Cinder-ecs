@@ -38,7 +38,7 @@ namespace ecs{
         
         std::list<IDrawable*>::iterator _listPosition;
         
-        friend class DrawTarget;
+        friend  DrawTarget;
     };
     
     
@@ -99,14 +99,7 @@ namespace ecs{
         }
         
         
-        static DrawSystem* getInstance(){
-            if ( mInstance == nullptr ){
-                static DrawSystem mS;
-                mInstance = &mS;
-            }
-            
-            return mInstance;
-        }
+		static DrawSystem* getInstance();
         
         
         void update() override{   }

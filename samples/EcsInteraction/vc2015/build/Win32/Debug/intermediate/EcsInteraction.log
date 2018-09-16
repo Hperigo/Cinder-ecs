@@ -1,0 +1,28 @@
+﻿cl : Command line warning D9030: '/Gm' is incompatible with multiprocessing; ignoring /MP switch
+  CinderImGui.cpp
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\lib\imgui\imgui.h(124): warning C4244: '=': conversion from 'const T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(393): warning C4018: '<': signed/unsigned mismatch
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(413): warning C4018: '<': signed/unsigned mismatch
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(557): warning C4018: '<': signed/unsigned mismatch
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(566): warning C4018: '<': signed/unsigned mismatch
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(774): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(787): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(801): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(922): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\src\cinderimgui.cpp(1021): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+  imgui_draw.cpp
+  imgui_demo.cpp
+  imgui.cpp
+  Generating Code...
+  EcsInteraction.vcxproj -> C:\Users\henrique-soso\Documents\dev\Cinder\blocks\Cinder-ecs\samples\EcsInteraction\vc2015\build\Win32\Debug\EcsInteraction.exe

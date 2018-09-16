@@ -1,0 +1,13 @@
+﻿  EcsSerializationApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-ecs\src\ecs\component.h(57): warning C4099: 'ecs::Component': type name first seen using 'class' now seen using 'struct'
+  c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-ecs\src\ecs\component.h(57): note: see declaration of 'ecs::Component'
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-ecs\src\ecs\entity.h(170): warning C4018: '<': signed/unsigned mismatch
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-ecs\src\utils\drawsystem.h(47): warning C4099: 'ecs::DrawTarget': type name first seen using 'class' now seen using 'struct'
+  c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-ecs\src\utils\drawsystem.h(47): note: see declaration of 'ecs::DrawTarget'
+c:\users\henrique-soso\documents\dev\cinder\blocks\cinder-imgui\lib\imgui\imgui.h(124): warning C4244: '=': conversion from 'const T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+  EcsSerialization.vcxproj -> C:\Users\henrique-soso\Documents\dev\Cinder\blocks\Cinder-ecs\samples\EcsSerialization\vc2015\build\Win32\Debug\EcsSerialization.exe

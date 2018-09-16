@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -13,19 +13,20 @@
     <ProjectGuid>{30D3CF62-CA1A-4296-A2ED-ECE6D5BC73F0}</ProjectGuid>
     <RootNamespace>EcsSerialization</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -108,6 +109,9 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\Utils\DrawSystem.cpp" />
+    <ClCompile Include="..\..\..\src\Utils\Transform.cpp" />
+    <ClCompile Include="..\..\..\src\Utils\UpdateDrawables.cpp" />
     <ClCompile Include="..\src\EcsSerializationApp.cpp" />
     <ClCompile Include="..\..\..\..\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.cpp" />
@@ -115,10 +119,14 @@
     <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\..\src\ecs\Entity.cpp" />
     <ClCompile Include="..\..\..\src\ecs\System.cpp" />
-    <ClCompile Include="..\..\..\src\Utils\Transform.cpp" />
-    <ClCompile Include="..\..\..\src\Utils\TransUpdateDrawablesform.cpp" />
+    <ClCompile Include="Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\Utils\DrawSystem.h" />
+    <ClInclude Include="..\..\..\src\Utils\Factory.h" />
+    <ClInclude Include="..\..\..\src\Utils\Transform.h" />
+    <ClInclude Include="..\..\..\src\Utils\TransformSystem.h" />
+    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\..\Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\..\Cinder-ImGui\include\imgui_user.h" />
@@ -130,9 +138,6 @@
     <ClInclude Include="..\..\..\src\ecs\Entity.h" />
     <ClInclude Include="..\..\..\src\ecs\Manager.h" />
     <ClInclude Include="..\..\..\src\ecs\System.h" />
-    <ClInclude Include="..\..\..\src\Utils\Transform.h" />
-    <ClInclude Include="..\..\..\src\Utils\TransformSystem.h" />
-    <ClInclude Include="..\..\..\src\Utils\UpdateDrawables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

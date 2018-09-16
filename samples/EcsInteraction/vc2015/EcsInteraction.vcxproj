@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -13,19 +13,20 @@
     <ProjectGuid>{E1A71CB7-D4D7-47EE-9B80-F58578837B8C}</ProjectGuid>
     <RootNamespace>EcsInteraction</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -49,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\..\..\include";..\..\..\..\_Cinder-ImGui\lib\imgui;..\..\..\..\_Cinder-ImGui\include;..\..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\..\..\include;..\..\..\..\Cinder-ImGui\lib\imgui;..\..\..\..\Cinder-ImGui\include;..\..\..\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -108,11 +109,11 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\src\EcsInteractionApp.cpp" />
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\src\CinderImGui.cpp" />
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\..\src\Utils\DrawSystem.cpp" />
     <ClCompile Include="..\..\..\src\Utils\UpdateDrawables.cpp" />
     <ClCompile Include="..\..\..\src\Utils\Transform.cpp" />
@@ -120,13 +121,13 @@
     <ClCompile Include="..\..\..\src\ecs\System.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\include\CinderImGui.h" />
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imconfig.h" />
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_internal.h" />
     <ClInclude Include="..\include\Resources.h" />
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\imgui_user.h" />
     <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\imgui_user.inl" />
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imconfig.h" />
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\..\src\ecs\Component.h" />
     <ClInclude Include="..\..\..\src\ecs\Entity.h" />
     <ClInclude Include="..\..\..\src\ecs\Manager.h" />

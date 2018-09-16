@@ -620,7 +620,6 @@ dependencies: \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsRendering/xcode/EcsRendering_Prefix.pch \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/UpdateDrawables.cpp \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/UpdateDrawables.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Component.h \
+  ../../../src/ecs/Component.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/DrawSystem.h \
-  ../../../src/ecs/System.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Entity.h
+  ../../../src/ecs/System.h ../../../src/ecs/Entity.h

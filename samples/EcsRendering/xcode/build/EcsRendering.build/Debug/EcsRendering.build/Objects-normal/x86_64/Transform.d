@@ -620,8 +620,8 @@ dependencies: \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/samples/EcsRendering/xcode/EcsRendering_Prefix.pch \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/Transform.cpp \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/Transform.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Component.h \
-  ../../../src/ecs/System.h ../../../../../include/cinder/Json.h \
+  ../../../src/ecs/Component.h ../../../src/ecs/System.h \
+  ../../../../../include/cinder/Json.h \
   ../../../../../include/cinder/Utilities.h \
   ../../../../../include/boost/container/list.hpp \
   ../../../../../include/boost/container/detail/config_begin.hpp \
@@ -724,7 +724,6 @@ dependencies: \
   ../../../../Cinder-ImGui/include/CinderImGuiExports.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-ImGui/lib/imgui/imgui.h \
   ../../../../Cinder-ImGui/lib/imgui/imconfig.h \
-  ../../../src/ecs/Manager.h \
-  /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Entity.h \
+  ../../../src/ecs/Manager.h ../../../src/ecs/Entity.h \
   ../../../src/Utils/DrawSystem.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/Utils/UpdateDrawables.h

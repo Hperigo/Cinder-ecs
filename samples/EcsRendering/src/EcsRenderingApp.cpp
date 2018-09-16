@@ -19,7 +19,6 @@ using namespace std;
 
 
 // Some basic components
-
 struct  ColorComponent{
     ci::Color _color;
 };
@@ -97,14 +96,16 @@ struct TextureComponent : public ecs::Component, public ecs::IDrawable{
 class MyCustomEntity : public ecs::Entity, public  ecs::IDrawable {
     
 public:
-    MyCustomEntity( float radius ) : mRadius( radius ){   }
+    MyCustomEntity( float radius ) : mRadius( radius ), ecs::IDrawable() {   }
     
+	~MyCustomEntity()
+	{
+		
+	}
     
     void setup() override {
         
         App::get()->getSignalUpdate().connect( std::bind( &MyCustomEntity::customUpdateCall, this) );
-//        setDrawTarget( ecs::DrawSystem::getInstance()->getDefaultDrawTarget() );
-        
         addComponent<Transform>();
     }
     
@@ -204,6 +205,7 @@ void EcsRenderingApp::setup()
     
     console() << "initialized!" << "💊" << std::endl;
     
+    
     mManager.setup();
 }
 
@@ -245,9 +247,9 @@ void EcsRenderingApp::draw()
     mManager.draw();
 
     {
-        gl::color(ColorA(1.0f,1.0f,1.0f, 1.0f));
-        gl::drawString( "Raw texture fetched from FBO draw target", vec2(10,10) );
-        gl::draw( mBlurDrawTarget->getBluredFbo()->getColorTexture(), ci::Rectf( 0,0, mBlurDrawTarget->getInputSize().x, mBlurDrawTarget->getInputSize().y ) );
+//        gl::color(ColorA(1.0f,1.0f,1.0f, 1.0f));
+//        gl::drawString( "Raw texture fetched from FBO draw target", vec2(10,10) );
+//        gl::draw( mBlurDrawTarget->getBluredFbo()->getColorTexture(), ci::Rectf( 0,0, mBlurDrawTarget->getInputSize().x, mBlurDrawTarget->getInputSize().y ) );
     }
 }
 

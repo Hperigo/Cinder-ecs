@@ -53,36 +53,12 @@
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\CinderImGui.h">
-      <Filter>Blocks\ImGui\include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\imgui_user.h">
       <Filter>Blocks\ImGui\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\_Cinder-ImGui\include\imgui_user.inl">
       <Filter>Blocks\ImGui\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imconfig.h">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui.h">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_internal.h">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\src\CinderImGui.cpp">
-      <Filter>Blocks\ImGui\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui.cpp">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_draw.cpp">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\_Cinder-ImGui\lib\imgui\imgui_demo.cpp">
-      <Filter>Blocks\ImGui\lib\imgui</Filter>
-    </ClCompile>
     <ClInclude Include="..\..\..\src\ecs\Component.h">
       <Filter>Blocks\ECS\src\ecs</Filter>
     </ClInclude>
@@ -125,10 +101,34 @@
     <ClCompile Include="..\..\..\src\ecs\System.cpp">
       <Filter>Blocks\ECS\src\ecs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Cinder-ImGui\src\CinderImGui.cpp">
+      <Filter>Blocks\ImGui\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imconfig.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\lib\imgui\imgui_internal.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Cinder-ImGui\include\CinderImGui.h">
+      <Filter>Blocks\ImGui\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -623,4 +623,5 @@ dependencies: \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Component.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/Manager.h \
   /Users/henrique/Documents/Dev/cpp/Cinder/blocks/Cinder-Ceks/src/ecs/System.h \
-  ../../../src/Utils/DrawSystem.h ../../../src/Utils/UpdateDrawables.h
+  ../../../src/Utils/DrawSystem.h ../../../src/Utils/UpdateDrawables.h \
+  ../../../src/ecs/Component.h
