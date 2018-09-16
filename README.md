@@ -1,10 +1,7 @@
 
 ## Rationale: 
 
-it's main focus is to *provide a simple api for composing objects and transversing components.* Traditional ecs libs are fine when your have some game like enviroment where most of the objects in the scene can be represented by components and their behaviour by systems. 
-
-But in "creative coding" apps is common to have entities with a very specialized behaviour breaking the ECS mindset, this library tries to fix  that by not having very strict rules, 
-
+it's main focus is to **provide a simple api for composing objects and traversing data.** Traditional ecs libs are fine when your have some game like enviroment where most of the objects in the scene can be represented by components and their behaviour by systems, but in "creative coding" apps is common to have entities with a very specialized behaviour breaking the ECS mindset, this library tries to fix  that by not having very strict rules.
 
 It also provides a couple of nice features that I think is usefull on a day-to-day creative coding eviroment like:
 
@@ -17,36 +14,23 @@ It also provides a couple of nice features that I think is usefull on a day-to-d
  I haven't done any performance tests but it's probably not the fastest ecs in the market, it's also not used in production extensively, it is somewhat of a learning project, so use with care! 
  
  *some references that I used to make this:*
- EntityX
- Vitoreo Romero tutorial
+ 
+ 1. EntityX
+ 2. Vitoreo Romero tutorials
 
-## TODO:
-
-1. improve draw system interface
-2. Maybe move components array to raw pointer? ( Today we have an  array of unique_ptr's and another of raw ptrs to that array, that's stupid IMO ) 
-3. performance tests?
-4. Windows samples are not working
-5. the ecs is somewhat framework agnostic, should we do an Openframeworks version?
-6. Better  serialization? 
-7. Make entities just an integer type? 
-
-### Missing in readme:
-1. Serialization
-2. registering components
-3. loading saving
-4. saving tree
-5. Transform component
-6. Draw Targets
 
 
 ### images:
 
+Transforms
 ![alt Transforms](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform.gif)
 
 ![alt Transforms2](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform2.gif)
 
+Draw Targets
 ![alt Draw Targets](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsDrawTarget.gif)
 
+Interaction
 ![alt Interaction](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsInteraction.gif)
 
 
@@ -99,10 +83,10 @@ e.getComponent<ColorComponent>->mColor = Color(1.0f, 0.0f, 0.0f);
 }
 ```
 
-## Entity inheritance
+## Entity & Entity inheritance
 
 
-Image that you have a scene with a lot of buttons, the buttons can be a default entity with components, for example:
+Image that you have a scene with a lot of buttons, the buttons can be a default entity with components. For example:
 ```
 auto btEntity = mManager.createEntity();
 btEntity->addComponent<Button>(); // handles user input, callback etc..
@@ -149,4 +133,22 @@ Struct ParticleSystem : ecs::System{
 and to create one: 
 ```auto particleSystem = mManager.createSystem<ParticleSystem>();```
 
+
+## TODO:
+
+1. improve draw system interface
+2. Maybe move components array to raw pointer? ( Today we have an  array of unique_ptr's and another of raw ptrs to that array, that's stupid IMO ) 
+3. performance tests?
+4. Windows samples are not working
+5. the ecs is somewhat framework agnostic, should we do an Openframeworks version?
+6. Better  serialization? 
+7. Make entities just an integer type? 
+
+### Missing in readme:
+1. Serialization
+2. registering components
+3. loading saving
+4. saving tree
+5. Transform component
+6. Draw Targets
 
