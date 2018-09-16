@@ -1,5 +1,7 @@
 *.DS_Store
 *.o
+*.xcuserstate
+
 ./samples/EcsSerialization/xcode/build/*
 ./samples/EcsRendering/xcode/build/*
 ./samples/EcsInteraction/xcode/build/*
