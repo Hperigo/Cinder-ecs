@@ -40,13 +40,14 @@ It also provides a couple of nice features that I think is usefull on a day-to-d
 
 
 ### images:
-![Transforms](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform.gif)
 
-![Transforms2](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform2.gif)
+![alt Transforms](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform.gif)
 
-![Draw Targets](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsDrawTarget.gif)
+![alt Transforms2](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsTransform2.gif)
 
-![Interaction](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsInteraction.gif)
+![alt Draw Targets](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsDrawTarget.gif)
+
+![alt Interaction](https://raw.githubusercontent.com/Hperigo/Cinder-ecs/master/imgs/ecsInteraction.gif)
 
 
 
