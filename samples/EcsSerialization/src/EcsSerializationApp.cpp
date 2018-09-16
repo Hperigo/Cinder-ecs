@@ -73,7 +73,9 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
 
     void setup() override {
         
-        auto drawTarget = getManager()->getDrawSystem()->getDefaultDrawTarget();
+        auto manager = getManager();
+        
+        auto drawTarget = manager->getDrawSystem()->getDefaultDrawTarget();
         setDrawTarget( drawTarget );
         
     }
@@ -81,7 +83,6 @@ struct RectComponent : public ecs::Component, public ecs::IDrawable{
     void draw() override{
         
         auto entity = getEntity().lock();
-        
         gl::ScopedModelMatrix m;
         
         auto c = entity->getComponent<Transform>();
@@ -100,7 +101,7 @@ template <>
 struct ecs::ComponentFactoryTemplate<RectComponent> : public ecs::ComponentFactory<RectComponent> {
  
     ComponentFactoryTemplate(){
-
+        owner->setDrawTarget(nullptr);
     }
     
     void load(void* archiver) override{
@@ -146,7 +147,7 @@ class EcsSerializationApp : public App {
     std::shared_ptr<TransformSystem> tsys;
     
     
-    std::shared_ptr<ecs::DrawSystem> mDrawSystem;
+    ecs::DrawSystem* mDrawSystem;
         
 };
 
